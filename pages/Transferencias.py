@@ -9,12 +9,12 @@ from data.data import carregar_rcl
 # Configuração da Página
 # ==================================================
 st.set_page_config(
-    page_title="Transferências correntes",
+    page_title="Transferências Correntes",
     page_icon="💰",
     layout="wide",
 )
 
-st.title("💰 Transferências correntes")
+st.title("💰 Transferências Correntes")
 
 
 # ==================================================

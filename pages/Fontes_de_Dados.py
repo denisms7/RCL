@@ -15,6 +15,7 @@ st.set_page_config(
 
 st.title("🗂️ Fontes de Dados")
 
+
 # -------------------------------------------------
 # Fonte
 # -------------------------------------------------
@@ -50,7 +51,6 @@ if pdf_files:
         )
 else:
     st.info("Nenhum PDF encontrado na pasta RCL-PDF.")
-
 
 st.subheader("ℹ️ Observações sobre dados renomeados")
 
