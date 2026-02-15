@@ -95,6 +95,14 @@ with col5:
 
 
 
+with st.expander("📉 Valores de entrada negativos"):
+    df_neg = df[df["VALOR"] < 0].copy()
+    # Seleciona apenas as colunas relevantes
+    df_neg = df_neg[["ANO", "MES_ANO", "ESPECIFICACAO", "VALOR"]]
+    # Formata VALOR em reais
+    df_neg["VALOR"] = df_neg["VALOR"].apply(lambda x: f"R$ {x:,.2f}")
+    st.dataframe(df_neg)
+
 # -------------------------------------------------
 # Anexo da LRF receita corrente liquida
 # -------------------------------------------------
