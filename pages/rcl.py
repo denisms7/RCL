@@ -10,12 +10,12 @@ df = carregar_rcl('RCL/RCL-DATA')
 # Configuração da página
 # -------------------------------------------------
 st.set_page_config(
-    page_title="Receita Corrente Líquida",
+    page_title="Receita Corrente Geral",
     page_icon="💰",
     layout="wide"
 )
 
-st.title("💰 Receita Corrente Líquida")
+st.title("💰 Receita Corrente Geral")
 
 
 # -------------------------------------------------
