@@ -193,10 +193,10 @@ fig_total = formatar_layout_monetario(
 col1, col2 = st.columns(2)
 
 with col1:
-    st.plotly_chart(fig_geral, use_container_width=True)
+    st.plotly_chart(fig_geral, width='stretch')
 
 with col2:
-    st.plotly_chart(fig_total, use_container_width=True)
+    st.plotly_chart(fig_total, width='stretch')
 
 
 # ==================================================
@@ -271,7 +271,7 @@ fig_individual = formatar_layout_monetario(
     tributo_selecionado,
 )
 
-st.plotly_chart(fig_individual, use_container_width=True)
+st.plotly_chart(fig_individual, width='stretch')
 
 
 # ==================================================
@@ -341,9 +341,9 @@ fig_composicao = px.pie(
 col3, col4 = st.columns(2)
 
 with col3:
-    st.plotly_chart(fig_rcl_vs_tributos, use_container_width=True)
+    st.plotly_chart(fig_rcl_vs_tributos, width='stretch')
 
 with col4:
-    st.plotly_chart(fig_composicao, use_container_width=True)
+    st.plotly_chart(fig_composicao, width='stretch')
 
-st.plotly_chart(fig_pizza_tributos, use_container_width=True)
+st.plotly_chart(fig_pizza_tributos, width='stretch')

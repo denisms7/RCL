@@ -161,10 +161,10 @@ fig_total_linha.update_traces(
 col_a, col_b = st.columns(2)
 
 with col_a:
-    st.plotly_chart(fig_total, use_container_width=True)
+    st.plotly_chart(fig_total, width='stretch')
 
 with col_b:
-    st.plotly_chart(fig_total_linha, use_container_width=True)
+    st.plotly_chart(fig_total_linha, width='stretch')
 
 
 
@@ -249,10 +249,10 @@ fig_barra.update_traces(
 col1, col2 = st.columns(2)
 
 with col1:
-    st.plotly_chart(fig_pizza, use_container_width=True)
+    st.plotly_chart(fig_pizza, width='stretch')
 
 with col2:
-    st.plotly_chart(fig_barra, use_container_width=True)
+    st.plotly_chart(fig_barra, width='stretch')
 
 
 
@@ -308,4 +308,4 @@ fig_transferencias_vs_outras.update_traces(
     )
 )
 
-st.plotly_chart(fig_transferencias_vs_outras, use_container_width=True)
+st.plotly_chart(fig_transferencias_vs_outras, width='stretch')

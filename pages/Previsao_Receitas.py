@@ -350,7 +350,7 @@ fig.update_layout(
     )
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width='stretch')
 
 
 # ==================================================
@@ -386,7 +386,7 @@ if not test.empty and not forecast_test.empty:
             showlegend=False
         )
         
-        st.plotly_chart(fig_erro, use_container_width=True)
+        st.plotly_chart(fig_erro, width='stretch')
         
         # Tabela detalhada
         st.subheader("Detalhamento Mês a Mês")
@@ -399,7 +399,7 @@ if not test.empty and not forecast_test.empty:
         df_tabela_erros["Erro (R$)"] = df_tabela_erros["Erro (R$)"].apply(lambda x: f"R$ {x:,.2f}")
         df_tabela_erros["Erro (%)"] = df_tabela_erros["Erro (%)"].apply(lambda x: f"{x:.1f}%")
         
-        st.dataframe(df_tabela_erros, use_container_width=True, hide_index=True)
+        st.dataframe(df_tabela_erros, width='stretch', hide_index=True)
 
 
 # ==================================================
@@ -426,7 +426,7 @@ else:
         "Máximo (95%)": df_futuro["yhat_upper"].apply(lambda x: f"R$ {x:,.2f}")
     })
     
-    st.dataframe(df_tabela, use_container_width=True, hide_index=True)
+    st.dataframe(df_tabela, width='stretch', hide_index=True)
     
     # Estatísticas resumidas
     col1, col2, col3 = st.columns(3)
