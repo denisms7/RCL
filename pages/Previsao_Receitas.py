@@ -559,4 +559,3 @@ with st.expander("ℹ️ Sobre o Modelo de Previsão"):
     
     **Resultado:** Previsões muito mais precisas! ✅
     """)
-
