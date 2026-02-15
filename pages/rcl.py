@@ -110,6 +110,15 @@ anexo_rcl = st.pills(
     default="RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
 )
 
+
+# Dicionário de cores
+cores_plotly = {
+    "RECEITA CORRENTE LÍQUIDA (III) = (I - II)": "seagreen",
+    "RECEITAS CORRENTES (I)": "navy",
+    "DEDUÇÕES (II)": "red"
+}
+
+
 anexo_rcl_tipo = st.segmented_control(
     "Tipo de Visualização",
     options=[

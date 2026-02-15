@@ -356,16 +356,16 @@ fig_composicao = px.pie(
 col3, col4 = st.columns(2)
 
 with col3:
-    st.plotly_chart(fig_rcl_vs_tributos, use_container_width=True)
+    st.plotly_chart(fig_rcl_vs_tributos, width='stretch')
 
 with col4:
-    st.plotly_chart(fig_composicao, use_container_width=True)
+    st.plotly_chart(fig_composicao, width='stretch')
 
 # Nova linha: Pizza e Barra Horizontal lado a lado
 col5, col6 = st.columns(2)
 
 with col5:
-    st.plotly_chart(fig_pizza_tributos, use_container_width=True)
+    st.plotly_chart(fig_pizza_tributos, width='stretch')
 
 with col6:
-    st.plotly_chart(fig_bar_tributos, use_container_width=True)
+    st.plotly_chart(fig_bar_tributos, width='stretch')
