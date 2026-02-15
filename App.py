@@ -43,16 +43,6 @@ df = df.loc[
 
 
 # -------------------------------------------------
-# Fonte
-# -------------------------------------------------
-st.sidebar.subheader("🗂️ Fonte", divider=True)
-st.sidebar.link_button(
-    "🔗 Portal da Transparência",
-    "https://centenariodosulpr.equiplano.com.br:7508/transparencia/receitaCorrenteLiquida"
-)
-
-
-# -------------------------------------------------
 # Anexo da LRF receita corrente liquida
 # -------------------------------------------------
 st.subheader("📊 Receita Corrente Geral")

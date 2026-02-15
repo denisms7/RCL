@@ -3,6 +3,12 @@ from typing import List
 import pandas as pd
 
 
+RENOMEANDO_COLUNAS = {
+        "RECEITA CORRENTE LÍQUIDA (I-II)": "RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
+        "Outras receitas tributárias": "Outros Impostos, Taxas e Contribuições de Melhoria",
+        "Receita tributária": "Impostos, Taxas e Contribuições de Melhoria",
+    }
+
 def carregar_rcl(diretorio: str) -> pd.DataFrame:
     caminho = Path(diretorio)
 
@@ -76,12 +82,8 @@ def carregar_rcl(diretorio: str) -> pd.DataFrame:
 
     df_final = pd.concat(lista_dfs, ignore_index=True)
 
-    renomeando_colunas = {
-            "RECEITA CORRENTE LÍQUIDA (I-II)": "RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
-            "Outras receitas tributárias": "Outros Impostos, Taxas e Contribuições de Melhoria",
-            "Receita tributária": "Impostos, Taxas e Contribuições de Melhoria",
-        }
 
-    df_final["ESPECIFICACAO"] = df_final["ESPECIFICACAO"].replace(renomeando_colunas)
+
+    df_final["ESPECIFICACAO"] = df_final["ESPECIFICACAO"].replace(RENOMEANDO_COLUNAS)
 
     return df_final
