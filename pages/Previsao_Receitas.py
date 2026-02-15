@@ -432,28 +432,6 @@ else:
     
     st.dataframe(df_tabela, width='stretch', hide_index=True)
     
-    # Estatísticas resumidas
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.metric(
-            "Média Mensal Projetada",
-            f"R$ {df_futuro['yhat'].mean():,.2f}"
-        )
-    
-    with col2:
-        crescimento = ((df_futuro["yhat"].iloc[-1] / df_futuro["yhat"].iloc[0]) - 1) * 100
-        st.metric(
-            "Crescimento Total",
-            f"{crescimento:.1f}%"
-        )
-    
-    with col3:
-        st.metric(
-            "Total Acumulado",
-            f"R$ {df_futuro['yhat'].sum():,.2f}"
-        )
-    
     # Botão de download
     csv = df_tabela.to_csv(index=False, sep=";").encode("utf-8")
     st.download_button(
