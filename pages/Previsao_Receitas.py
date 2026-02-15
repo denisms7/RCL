@@ -425,6 +425,8 @@ else:
         "Mínimo (95%)": df_futuro["yhat_lower"].apply(lambda x: f"R$ {x:,.2f}"),
         "Máximo (95%)": df_futuro["yhat_upper"].apply(lambda x: f"R$ {x:,.2f}")
     })
+
+    df_tabela.insert(0, "Especificação", especificacao)
     
     st.dataframe(df_tabela, width='stretch', hide_index=True)
     
@@ -451,7 +453,7 @@ else:
         )
     
     # Botão de download
-    csv = df_futuro[["ds", "yhat", "yhat_lower", "yhat_upper"]].to_csv(index=False)
+    csv = df_tabela.to_csv(index=False, sep=";").encode("utf-8")
     st.download_button(
         label="📥 Baixar Previsões (CSV)",
         data=csv,
