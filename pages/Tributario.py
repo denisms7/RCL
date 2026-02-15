@@ -289,20 +289,36 @@ ano_selecionado = st.slider(
     value=ano_max,
 )
 
-
 df_pizza_tributos = (
     df_tributos[df_tributos["ANO"] == ano_selecionado]
     .groupby("ESPECIFICACAO", as_index=False)["VALOR"]
     .sum()
 )
 
+# Ordena do maior para o menor para o gráfico de barras
+df_barras = df_pizza_tributos.sort_values(by="VALOR", ascending=True)  # horizontal: menor em cima
+
+# Gráfico de Pizza
 fig_pizza_tributos = px.pie(
     df_pizza_tributos,
     names="ESPECIFICACAO",
     values="VALOR",
 )
 
+# Gráfico de Barras Horizontal
+fig_bar_tributos = px.bar(
+    df_barras,
+    x="VALOR",
+    y="ESPECIFICACAO",
+    orientation='h',
+    text="VALOR",
+    labels={"VALOR": "Valor (R$)", "ESPECIFICACAO": "Tipo de Tributo"},
+    title="Tributos por Categoria",
+)
+fig_bar_tributos.update_traces(texttemplate='%{text:,.2f}', textposition='outside')
+fig_bar_tributos.update_layout(yaxis={'categoryorder':'total ascending'}, uniformtext_minsize=8)
 
+# Proporção RCL vs Tributos
 total_rcl = df_rcl[df_rcl["ANO"] == ano_selecionado]["VALOR"].sum()
 total_tributos = df_pizza_tributos["VALOR"].sum()
 
@@ -325,7 +341,6 @@ fig_rcl_vs_tributos = px.pie(
     values="Valor",
 )
 
-
 df_composicao = calcular_composicao_liquida(
     df_composicao_base,
     ano_selecionado,
@@ -337,13 +352,20 @@ fig_composicao = px.pie(
     values="VALOR",
 )
 
-
+# Layout com colunas
 col3, col4 = st.columns(2)
 
 with col3:
-    st.plotly_chart(fig_rcl_vs_tributos, width='stretch')
+    st.plotly_chart(fig_rcl_vs_tributos, use_container_width=True)
 
 with col4:
-    st.plotly_chart(fig_composicao, width='stretch')
+    st.plotly_chart(fig_composicao, use_container_width=True)
 
-st.plotly_chart(fig_pizza_tributos, width='stretch')
+# Nova linha: Pizza e Barra Horizontal lado a lado
+col5, col6 = st.columns(2)
+
+with col5:
+    st.plotly_chart(fig_pizza_tributos, use_container_width=True)
+
+with col6:
+    st.plotly_chart(fig_bar_tributos, use_container_width=True)
