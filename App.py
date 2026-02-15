@@ -21,6 +21,10 @@ st.set_page_config(
 st.title("💰 Receitas e Despesas")
 
 
+
+
+
+
 # -------------------------------------------------
 # Filtrar período 💰
 # -------------------------------------------------
@@ -40,6 +44,55 @@ ano_inicio, ano_fim = st.sidebar.slider(
 df = df.loc[
     (df["ANO"] >= ano_inicio) & (df["ANO"] <= ano_fim)
 ].copy()  # Adicione .copy() aqui
+
+
+
+# -------------------------------------------------
+# Descritical de receitas e despesas 💰
+# -------------------------------------------------
+
+valores_validos = df[df["VALOR"] != 0]["VALOR"]
+df_negativo = df[df["VALOR"] < 0]
+
+# Calcula métricas
+df_min = valores_validos.min()
+df_max = valores_validos.max()
+df_mean = valores_validos.mean()
+df_median = valores_validos.median()
+
+col1, col2, col3, col4, col5 = st.columns(5)
+
+with col1:
+    st.metric(
+        label="Receita Negativa",
+        value=len(df_negativo),
+        help=f"Quantidade de entradas com valor negativo: {ano_min} a {ano_max}"
+    )
+with col2:
+    st.metric(
+        label="Menor Entrada",
+        value=f"R$ {df_min:,.2f}",
+        help=f"Menor valor registrado, desconsiderando zeros: {ano_min} a {ano_max}"
+    )
+with col3:
+    st.metric(
+        label="Maior Entrada",
+        value=f"R$ {df_max:,.2f}",
+        help=f"Maior valor registrado, desconsiderando zeros: {ano_min} a {ano_max}"
+    )
+with col4:
+    st.metric(
+        label="Média",
+        value=f"R$ {df_mean:,.2f}",
+        help=f"Média dos valores, desconsiderando zeros: {ano_min} a {ano_max}"
+    )
+with col5:
+    st.metric(
+        label="Mediana",
+        value=f"R$ {df_median:,.2f}",
+        help=f"Mediana dos valores, desconsiderando zeros: {ano_min} a {ano_max}"
+    )
+
 
 
 # -------------------------------------------------

@@ -33,7 +33,6 @@ st.markdown("---")
 @st.cache_data
 def carregar_dados() -> pd.DataFrame:
     df_local = carregar_rcl("RCL/RCL-DATA")
-    df_local["MES_ANO"] = pd.to_datetime(df_local["MES_ANO"])
     df_local = df_local.sort_values("MES_ANO")
     return df_local
 
@@ -67,6 +66,8 @@ RCL_LABEL = "RECEITAS CORRENTES (I)"
 TIPOS_COMPOSICAO = TIPOS_TRIBUTARIOS + [RCL_LABEL] + TIPOS_COTA
 
 df = df[df["ESPECIFICACAO"].isin(TIPOS_COMPOSICAO)]
+
+
 
 
 # ==================================================
@@ -128,6 +129,7 @@ with col2:
     st.metric("Treino", len(train))
 with col3:
     st.metric("Teste (Validação)", len(test))
+
 
 st.markdown("---")
 

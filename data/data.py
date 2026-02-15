@@ -9,6 +9,22 @@ RENOMEANDO_COLUNAS = {
         "Receita tributária": "Impostos, Taxas e Contribuições de Melhoria",
     }
 
+
+# Função para converter valores com parênteses em negativos
+def converter_valor(valor):
+    if pd.isna(valor):
+        return 0
+    # Se for string com parênteses, converte para negativo
+    if isinstance(valor, str) and "(" in valor and ")" in valor:
+        valor = valor.replace("(", "").replace(")", "")
+        return -float(valor.replace(".", "").replace(",", "."))
+    # Se for string normal com vírgula decimal
+    if isinstance(valor, str):
+        return float(valor.replace(".", "").replace(",", "."))
+    # Se já for número
+    return float(valor)
+
+
 def carregar_rcl(diretorio: str) -> pd.DataFrame:
     caminho = Path(diretorio)
 
@@ -61,6 +77,9 @@ def carregar_rcl(diretorio: str) -> pd.DataFrame:
             var_name="MES_ANO",
             value_name="VALOR"
         )
+
+        # Converte VALOR, tratando parênteses e vírgulas
+        df_long["VALOR"] = df_long["VALOR"].apply(converter_valor)
 
         df_long["ANO"] = ano
 
