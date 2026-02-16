@@ -170,6 +170,16 @@ fig_geral = formatar_layout_monetario(
     "Receita Tributária Geral",
 )
 
+fig_geral.update_traces(
+    hovertemplate=(
+        f"Data: %{{x}}<br>"
+        "Especificação: %{fullData.name}<br>"
+        "Valor: R$ %{y:,.2f}"
+        "<extra></extra>"
+    )
+)
+
+
 
 df_total = (
     df_geral
@@ -187,6 +197,14 @@ fig_total = px.line(
 fig_total = formatar_layout_monetario(
     fig_total,
     "Total de Receita Tributária",
+)
+
+fig_total.update_traces(
+    hovertemplate=(
+        f"Data: %{{x}}<br>"
+        "Valor: R$ %{y:,.2f}"
+        "<extra></extra>"
+    )
 )
 
 
@@ -271,6 +289,16 @@ fig_individual = formatar_layout_monetario(
     tributo_selecionado,
 )
 
+fig_individual.update_traces(
+    hovertemplate=(
+        f"Data: %{{x}}<br>"
+        "Valor: R$ %{y:,.2f}"
+        "<extra></extra>"
+    )
+)
+
+
+
 st.plotly_chart(fig_individual, width='stretch')
 
 
@@ -295,14 +323,33 @@ df_pizza_tributos = (
     .sum()
 )
 
-# Ordena do maior para o menor para o gráfico de barras
-df_barras = df_pizza_tributos.sort_values(by="VALOR", ascending=True)  # horizontal: menor em cima
+# Calcula percentuais para os tributos
+total_tributos = df_pizza_tributos["VALOR"].sum()
+df_pizza_tributos["PERCENTUAL"] = (df_pizza_tributos["VALOR"] / total_tributos * 100)
 
-# Gráfico de Pizza
+# Ordena do maior para o menor para o gráfico de barras
+df_barras = df_pizza_tributos.sort_values(by="VALOR", ascending=True)
+
+# Gráfico de Pizza - Tributos
 fig_pizza_tributos = px.pie(
     df_pizza_tributos,
     names="ESPECIFICACAO",
     values="VALOR",
+    title=f"Composição dos Tributos - {ano_selecionado}",
+)
+fig_pizza_tributos.update_traces(
+    hovertemplate=(
+        "<b>%{label}</b><br>"
+        "Valor: R$ %{value:,.2f}<br>"
+        "Percentual: %{percent}<br>"
+        "<extra></extra>"
+    ),
+    textposition='inside',
+    textinfo='percent+label'
+)
+fig_pizza_tributos.update_layout(
+    showlegend=True,
+    legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.02)
 )
 
 # Gráfico de Barras Horizontal
@@ -313,14 +360,30 @@ fig_bar_tributos = px.bar(
     orientation='h',
     text="VALOR",
     labels={"VALOR": "Valor (R$)", "ESPECIFICACAO": "Tipo de Tributo"},
-    title="Tributos por Categoria",
+    title=f"Tributos por Categoria - {ano_selecionado}",
 )
-fig_bar_tributos.update_traces(texttemplate='%{text:,.2f}', textposition='outside')
-fig_bar_tributos.update_layout(yaxis={'categoryorder':'total ascending'}, uniformtext_minsize=8)
+fig_bar_tributos.update_traces(
+    texttemplate='R$ %{text:,.2f}',
+    textposition='outside',
+    hovertemplate=(
+        "<b>%{y}</b><br>"
+        "Valor: R$ %{x:,.2f}<br>"
+        "Percentual: %{customdata[0]:.2f}%<br>"
+        "<extra></extra>"
+    ),
+    customdata=df_barras[["PERCENTUAL"]].values
+)
+fig_bar_tributos.update_layout(
+    yaxis={'categoryorder':'total ascending'},
+    uniformtext_minsize=8,
+    xaxis_title="Valor (R$)",
+    yaxis_title="",
+    margin=dict(l=20, r=20, t=40, b=20)
+)
 
 # Proporção RCL vs Tributos
 total_rcl = df_rcl[df_rcl["ANO"] == ano_selecionado]["VALOR"].sum()
-total_tributos = df_pizza_tributos["VALOR"].sum()
+total_tributos_sum = df_pizza_tributos["VALOR"].sum()
 
 df_proporcao = pd.DataFrame(
     {
@@ -329,43 +392,82 @@ df_proporcao = pd.DataFrame(
             "OUTRAS RECEITAS CORRENTES",
         ],
         "Valor": [
-            total_tributos,
-            total_rcl - total_tributos,
+            total_tributos_sum,
+            total_rcl - total_tributos_sum,
         ],
     }
 )
+
+# Calcula percentuais
+df_proporcao["PERCENTUAL"] = (df_proporcao["Valor"] / total_rcl * 100)
 
 fig_rcl_vs_tributos = px.pie(
     df_proporcao,
     names="Categoria",
     values="Valor",
+    title=f"RCL: Tributos vs Outras Receitas - {ano_selecionado}",
+    color_discrete_sequence=px.colors.qualitative.Set2
+)
+fig_rcl_vs_tributos.update_traces(
+    hovertemplate=(
+        "<b>%{label}</b><br>"
+        "Valor: R$ %{value:,.2f}<br>"
+        "Percentual: %{percent}<br>"
+        "Total RCL: R$ " + f"{total_rcl:,.2f}<br>"
+        "<extra></extra>"
+    ),
+    textposition='inside',
+    textinfo='percent+label',
+    pull=[0.05, 0]  # destaca a fatia de Tributos
 )
 
+# Composição da RCL
 df_composicao = calcular_composicao_liquida(
     df_composicao_base,
     ano_selecionado,
 )
 
+# Calcula percentuais para composição
+total_composicao = df_composicao["VALOR"].sum()
+df_composicao["PERCENTUAL"] = (df_composicao["VALOR"] / total_composicao * 100)
+
 fig_composicao = px.pie(
     df_composicao,
     names="ESPECIFICACAO",
     values="VALOR",
+    title=f"Composição Líquida da RCL - {ano_selecionado}",
+    color_discrete_sequence=px.colors.qualitative.Pastel
+)
+fig_composicao.update_traces(
+    hovertemplate=(
+        "<b>%{label}</b><br>"
+        "Valor: R$ %{value:,.2f}<br>"
+        "Percentual: %{percent}<br>"
+        "Total: R$ " + f"{total_composicao:,.2f}<br>"
+        "<extra></extra>"
+    ),
+    textposition='inside',
+    textinfo='percent+label'
+)
+fig_composicao.update_layout(
+    showlegend=True,
+    legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.02)
 )
 
 # Layout com colunas
 col3, col4 = st.columns(2)
 
 with col3:
-    st.plotly_chart(fig_rcl_vs_tributos, width='stretch')
+    st.plotly_chart(fig_rcl_vs_tributos, use_container_width=True)
 
 with col4:
-    st.plotly_chart(fig_composicao, width='stretch')
+    st.plotly_chart(fig_composicao, use_container_width=True)
 
 # Nova linha: Pizza e Barra Horizontal lado a lado
 col5, col6 = st.columns(2)
 
 with col5:
-    st.plotly_chart(fig_pizza_tributos, width='stretch')
+    st.plotly_chart(fig_pizza_tributos, use_container_width=True)
 
 with col6:
-    st.plotly_chart(fig_bar_tributos, width='stretch')
+    st.plotly_chart(fig_bar_tributos, use_container_width=True)
