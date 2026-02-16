@@ -31,6 +31,25 @@ st.link_button(
 pdf_dir = Path("RCL/RCL-PDF")  # caminho da pasta com os PDFs
 pdf_files = sorted(pdf_dir.glob("*.pdf"))  # pega todos os PDFs
 
+# Função para exibir o PDF no modal
+@st.dialog("Visualizar PDF", width="large")
+def mostrar_pdf(pdf_path, nome):
+    st.subheader(f"📄 {nome}")
+    with open(pdf_path, "rb") as f:
+        pdf_bytes = f.read()
+    
+    # Exibir o PDF
+    st.pdf(pdf_bytes, height=600)
+    
+    # Botão de download dentro do modal
+    st.download_button(
+        label=f"📥 Baixar {nome}",
+        data=pdf_bytes,
+        file_name=nome,
+        mime="application/pdf",
+        use_container_width=True
+    )
+
 if pdf_files:
     st.subheader("📄 PDFs de Receita Corrente Líquida")
     
@@ -41,14 +60,10 @@ if pdf_files:
     for i, pdf in enumerate(pdf_files):
         col = colunas[i % num_colunas]  # seleciona a coluna correta
         nome_arquivo = pdf.stem  # ex: 2013
-        with open(pdf, "rb") as f:
-            pdf_bytes = f.read()
-        col.download_button(
-            label=f"📥 {nome_arquivo}.pdf",
-            data=pdf_bytes,
-            file_name=pdf.name,
-            mime="application/pdf"
-        )
+        
+        # Botão para abrir o modal
+        if col.button(f"📄 {nome_arquivo}", key=f"btn_{i}", use_container_width=True):
+            mostrar_pdf(pdf, f"{nome_arquivo}.pdf")
 else:
     st.info("Nenhum PDF encontrado na pasta RCL-PDF.")
 
