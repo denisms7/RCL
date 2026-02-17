@@ -123,21 +123,25 @@ cores_plotly = {
 anexo_rcl_tipo = st.segmented_control(
     "Tipo de Visualização",
     options=[
-        "Mensal",
-        "Anual",
+        "Grafico Mensal",
+        "Grafico Anual",
+        "Tabela de Dados",
         ],
-    default="Mensal",
+    default="Grafico Mensal",
 )
 
 rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl]
 
-if anexo_rcl_tipo == "Mensal":
+if anexo_rcl_tipo == "Grafico Mensal":
     anexo_rcl_tipo_coluna = "MES_ANO"
     rcl_geral = rcl_geral.sort_values(by="MES_ANO")
-elif anexo_rcl_tipo == "Anual":
+elif anexo_rcl_tipo == "Grafico Anual":
     anexo_rcl_tipo_coluna = "ANO"
     rcl_geral = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
     rcl_geral = rcl_geral.sort_values(by="ANO")
+elif anexo_rcl_tipo == "Tabela de Dados":
+    st.dataframe(rcl_geral[["ANO", "MES_ANO", "VALOR"]])
+    st.stop()  # Para evitar que o gráfico seja exibido
 
 fig_rcl = px.line(
     rcl_geral,
@@ -166,4 +170,11 @@ fig_rcl.update_traces(
     )
 )
 
-st.plotly_chart(fig_rcl, width='stretch')
+if anexo_rcl_tipo == "Grafico Mensal":
+    st.plotly_chart(fig_rcl, width='stretch')
+
+elif anexo_rcl_tipo == "Grafico Anual":
+    st.plotly_chart(fig_rcl, width='stretch')
+
+elif anexo_rcl_tipo == "Tabela de Dados":
+    st.dataframe(rcl_geral[["ANO", "MES_ANO", "VALOR"]])
