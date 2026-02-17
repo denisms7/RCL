@@ -76,6 +76,10 @@ tipo_dado = st.segmented_control(
     default="Grafico Mensal",
 )
 
+if tipo_dado == None:
+    st.warning("Selecione um tipo de visualização.")
+    st.stop()
+
 if tipo_dado == "Grafico Mensal":
     df_mensal = df.groupby("MES_ANO")["TOTAL_VANTAGENS"].sum().reset_index()
     fig_mensal = px.line(

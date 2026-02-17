@@ -111,6 +111,10 @@ anexo_rcl = st.pills(
     default="RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
 )
 
+if anexo_rcl == None:
+    st.warning("Selecione um tipo de receita válido.")
+    st.stop()
+
 
 # Dicionário de cores
 cores_plotly = {
@@ -135,46 +139,89 @@ rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl]
 if anexo_rcl_tipo == "Grafico Mensal":
     anexo_rcl_tipo_coluna = "MES_ANO"
     rcl_geral = rcl_geral.sort_values(by="MES_ANO")
+
+    fig_rcl = px.line(
+        rcl_geral,
+        x=anexo_rcl_tipo_coluna,
+        y="VALOR",
+        markers=True,
+        labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
+    )
+
+    fig_rcl.update_layout(
+        title=f"{anexo_rcl}",
+        xaxis_title=anexo_rcl_tipo,
+        yaxis_title="Valor (R$)",
+        yaxis=dict(
+            tickformat=",.2f",
+            tickprefix="R$ ",
+            separatethousands=True
+        )
+    )
+
+    fig_rcl.update_traces(
+        hovertemplate=(
+            f"{anexo_rcl_tipo}: %{{x}}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
+    )
+
+    st.plotly_chart(fig_rcl, width='stretch')
+
 elif anexo_rcl_tipo == "Grafico Anual":
     anexo_rcl_tipo_coluna = "ANO"
     rcl_geral = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
     rcl_geral = rcl_geral.sort_values(by="ANO")
-elif anexo_rcl_tipo == "Tabela de Dados":
-    st.dataframe(rcl_geral[["ANO", "MES_ANO", "VALOR"]])
-    st.stop()  # Para evitar que o gráfico seja exibido
 
-fig_rcl = px.line(
-    rcl_geral,
-    x=anexo_rcl_tipo_coluna,
-    y="VALOR",
-    markers=True,
-    labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
-)
-
-fig_rcl.update_layout(
-    title=f"{anexo_rcl}",
-    xaxis_title=anexo_rcl_tipo,
-    yaxis_title="Valor (R$)",
-    yaxis=dict(
-        tickformat=",.2f",
-        tickprefix="R$ ",
-        separatethousands=True
+    fig_rcl = px.line(
+        rcl_geral,
+        x=anexo_rcl_tipo_coluna,
+        y="VALOR",
+        markers=True,
+        labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
     )
-)
 
-fig_rcl.update_traces(
-    hovertemplate=(
-        f"{anexo_rcl_tipo}: %{{x}}<br>"
-        "Valor: R$ %{y:,.2f}"
-        "<extra></extra>"
+    fig_rcl.update_layout(
+        title=f"{anexo_rcl}",
+        xaxis_title=anexo_rcl_tipo,
+        yaxis_title="Valor (R$)",
+        yaxis=dict(
+            tickformat=",.2f",
+            tickprefix="R$ ",
+            separatethousands=True
+        )
     )
-)
 
-if anexo_rcl_tipo == "Grafico Mensal":
-    st.plotly_chart(fig_rcl, width='stretch')
+    fig_rcl.update_traces(
+        hovertemplate=(
+            f"{anexo_rcl_tipo}: %{{x}}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
+    )
 
-elif anexo_rcl_tipo == "Grafico Anual":
     st.plotly_chart(fig_rcl, width='stretch')
 
 elif anexo_rcl_tipo == "Tabela de Dados":
-    st.dataframe(rcl_geral[["ANO", "MES_ANO", "VALOR"]])
+
+    st.dataframe(rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]])
+
+else:
+    st.warning("Selecione um tipo de visualização válido.")
+
+
+
+
+if anexo_rcl == "RECEITA CORRENTE LÍQUIDA (III) = (I - II)":
+    st.markdown(
+        "A **Receita Corrente Líquida (RCL)** é um indicador fundamental para a gestão financeira dos municípios, pois representa a receita disponível após as deduções legais. Ela é calculada subtraindo as deduções (II) das receitas correntes (I). A RCL é utilizada para determinar os limites de gastos públicos, como o percentual destinado à educação e saúde, e para avaliar a capacidade financeira do município. Manter uma RCL saudável é crucial para garantir a sustentabilidade fiscal e a capacidade de investimento em serviços públicos essenciais."
+    )
+elif anexo_rcl == "RECEITAS CORRENTES (I)":
+    st.markdown(
+        "As **Receitas Correntes (I)** englobam todas as receitas que o município arrecada regularmente, como impostos, taxas, contribuições e transferências correntes. Essas receitas são essenciais para financiar as despesas públicas e manter os serviços oferecidos à população. As receitas correntes são a base para o cálculo da Receita Corrente Líquida (RCL) e são um indicador importante da capacidade de arrecadação do município."
+    )
+elif anexo_rcl == "DEDUÇÕES (II)":
+    st.markdown(
+        "As **Deduções (II)** referem-se às despesas obrigatórias que devem ser subtraídas das receitas correntes para calcular a Receita Corrente Líquida (RCL). Essas deduções incluem transferências constitucionais, como o Fundo de Participação dos Municípios (FPM), e outras despesas legais que reduzem a receita disponível para o município. As deduções são um componente crucial para entender a real capacidade financeira do município e para garantir que os limites de gastos públicos sejam respeitados."
+    )

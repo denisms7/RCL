@@ -76,7 +76,71 @@ if tipo_visualizacao_geral == "Mensal":
         .sum()
     )
 
-else:
+    fig_total = px.line(
+        df_total,
+        x=eixo_x,
+        y="VALOR",
+        markers=True,
+    )
+
+    fig_total.update_layout(
+        title="Transferências correntes - Total",
+        xaxis_title=x_title,
+        yaxis_title="Valor (R$)",
+        yaxis=dict(
+            tickformat=",.2f",
+            tickprefix="R$ ",
+            separatethousands=True,
+        ),
+    )
+
+    fig_total.update_traces(
+        hovertemplate=(
+            f"{x_title}: %{{x}}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
+    )
+
+
+    # ==================================================
+    # Gráfico por Especificação
+    # ==================================================
+    fig_total_linha = px.line(
+        df_linha,
+        x=eixo_x,
+        y="VALOR",
+        color="ESPECIFICACAO",
+        markers=True,
+    )
+
+    fig_total_linha.update_layout(
+        title="Transferências correntes por tipo",
+        xaxis_title=x_title,
+        yaxis_title="Valor (R$)",
+        yaxis=dict(
+            tickformat=",.2f",
+            tickprefix="R$ ",
+            separatethousands=True,
+        ),
+    )
+
+    fig_total_linha.update_traces(
+        hovertemplate=(
+            f"{x_title}: %{{x}}<br>"
+            "Especificação: %{fullData.name}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
+    )
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.plotly_chart(fig_total, width='stretch')
+    with col_b:
+        st.plotly_chart(fig_total_linha, width='stretch')
+
+elif tipo_visualizacao_geral == "Anual":
     eixo_x = "ANO"
     x_title = "Ano"
 
@@ -92,79 +156,77 @@ else:
         .sum()
     )
 
-
-# ==================================================
-# Gráfico Total Geral
-# ==================================================
-fig_total = px.line(
-    df_total,
-    x=eixo_x,
-    y="VALOR",
-    markers=True,
-)
-
-fig_total.update_layout(
-    title="Transferências correntes - Total",
-    xaxis_title=x_title,
-    yaxis_title="Valor (R$)",
-    yaxis=dict(
-        tickformat=",.2f",
-        tickprefix="R$ ",
-        separatethousands=True,
-    ),
-)
-
-fig_total.update_traces(
-    hovertemplate=(
-        f"{x_title}: %{{x}}<br>"
-        "Valor: R$ %{y:,.2f}"
-        "<extra></extra>"
+    fig_total = px.line(
+        df_total,
+        x=eixo_x,
+        y="VALOR",
+        markers=True,
     )
-)
 
-
-# ==================================================
-# Gráfico por Especificação
-# ==================================================
-fig_total_linha = px.line(
-    df_linha,
-    x=eixo_x,
-    y="VALOR",
-    color="ESPECIFICACAO",
-    markers=True,
-)
-
-fig_total_linha.update_layout(
-    title="Transferências correntes por tipo",
-    xaxis_title=x_title,
-    yaxis_title="Valor (R$)",
-    yaxis=dict(
-        tickformat=",.2f",
-        tickprefix="R$ ",
-        separatethousands=True,
-    ),
-)
-
-fig_total_linha.update_traces(
-    hovertemplate=(
-        f"{x_title}: %{{x}}<br>"
-        "Especificação: %{fullData.name}<br>"
-        "Valor: R$ %{y:,.2f}"
-        "<extra></extra>"
+    fig_total.update_layout(
+        title="Transferências correntes - Total",
+        xaxis_title=x_title,
+        yaxis_title="Valor (R$)",
+        yaxis=dict(
+            tickformat=",.2f",
+            tickprefix="R$ ",
+            separatethousands=True,
+        ),
     )
-)
+
+    fig_total.update_traces(
+        hovertemplate=(
+            f"{x_title}: %{{x}}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
+    )
+
+
+    # ==================================================
+    # Gráfico por Especificação
+    # ==================================================
+    fig_total_linha = px.line(
+        df_linha,
+        x=eixo_x,
+        y="VALOR",
+        color="ESPECIFICACAO",
+        markers=True,
+    )
+
+    fig_total_linha.update_layout(
+        title="Transferências correntes por tipo",
+        xaxis_title=x_title,
+        yaxis_title="Valor (R$)",
+        yaxis=dict(
+            tickformat=",.2f",
+            tickprefix="R$ ",
+            separatethousands=True,
+        ),
+    )
+
+    fig_total_linha.update_traces(
+        hovertemplate=(
+            f"{x_title}: %{{x}}<br>"
+            "Especificação: %{fullData.name}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
+    )
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.plotly_chart(fig_total, width='stretch')
+    with col_b:
+        st.plotly_chart(fig_total_linha, width='stretch')
+
+else:
+    st.warning("Selecione um tipo de visualização para exibir os gráficos.")
 
 
 # ==================================================
-# Layout
+# Gráfico Pizza
 # ==================================================
-col_a, col_b = st.columns(2)
-
-with col_a:
-    st.plotly_chart(fig_total, width='stretch')
-
-with col_b:
-    st.plotly_chart(fig_total_linha, width='stretch')
 
 ano_individual = st.slider(
     "Selecione o ano",
@@ -186,9 +248,7 @@ df_individual = (
 )
 
 
-# ==================================================
-# Gráfico Pizza
-# ==================================================
+
 fig_pizza = px.pie(
     df_individual,
     names="ESPECIFICACAO",

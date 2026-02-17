@@ -142,7 +142,8 @@ if tipo_visualizacao_geral == "Mensal":
         df_tributos,
         ["MES_ANO", "ESPECIFICACAO"],
     )
-else:
+
+elif tipo_visualizacao_geral == "Anual":
     df_geral = (
         agrupar_valor(
             df_tributos,
@@ -150,6 +151,10 @@ else:
         )
         .sort_values("ANO")
     )
+
+else:
+    st.warning("Selecione um tipo de visualização.")
+    st.stop()
 
 
 fig_geral = px.bar(
