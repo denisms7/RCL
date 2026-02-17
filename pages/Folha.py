@@ -84,7 +84,8 @@ if tipo_dado == "Grafico Mensal":
         df_mensal,
         x="MES_ANO",
         y="TOTAL_VANTAGENS",
-        title="Total de Vantagens por Mês")
+        markers=True,
+        )
     
     fig_mensal.update_layout(
         title=f"Total de Vantagens por Mês",
@@ -110,9 +111,10 @@ if tipo_dado == "Grafico Mensal":
 elif tipo_dado == "Grafico Anual":
     df_anual = df.groupby("ANO")["TOTAL_VANTAGENS"].sum().reset_index()
     fig_anual = px.bar(
-        df_anual, x="ANO",
+        df_anual,
+        x="ANO",
         y="TOTAL_VANTAGENS",
-        title="Total de Vantagens por Ano")
+        )
     
     fig_anual.update_layout(
         title=f"Total de Vantagens por Ano",
