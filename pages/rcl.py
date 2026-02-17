@@ -178,11 +178,10 @@ elif anexo_rcl_tipo == "Grafico Anual":
     rcl_geral = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
     rcl_geral = rcl_geral.sort_values(by="ANO")
 
-    fig_rcl = px.line(
+    fig_rcl = px.bar(
         rcl_geral,
         x=anexo_rcl_tipo_coluna,
         y="VALOR",
-        markers=True,
         labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
     )
 

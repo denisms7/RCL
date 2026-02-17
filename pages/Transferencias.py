@@ -149,11 +149,10 @@ elif tipo_visualizacao_geral == "Anual":
         .sum()
     )
 
-    fig_total = px.line(
+    fig_total = px.bar(
         df_total,
         x=eixo_x,
         y="VALOR",
-        markers=True,
     )
 
     fig_total.update_layout(

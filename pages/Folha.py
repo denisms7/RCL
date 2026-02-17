@@ -107,7 +107,7 @@ if tipo_dado == "Grafico Mensal":
         )
     )
 
-    st.plotly_chart(fig_mensal, use_container_width=True)
+    st.plotly_chart(fig_mensal, width='stretch')
 
 elif tipo_dado == "Grafico Anual":
     df_anual = df.groupby("ANO")["TOTAL_VANTAGENS"].sum().reset_index()
@@ -136,7 +136,66 @@ elif tipo_dado == "Grafico Anual":
         )
     )
 
-    st.plotly_chart(fig_anual, use_container_width=True)
+    st.plotly_chart(fig_anual, width='stretch')
 
 elif tipo_dado == "Tabela de Dados":
     st.dataframe(df[["ANO", "MES_ANO", "TOTAL_VANTAGENS"]].sort_values(by=["ANO", "MES_ANO"], ascending=[True, True]).reset_index(drop=True))
+
+
+
+st.subheader("Comparativo Mensal", divider=True)
+
+MESES = {
+    1: "Janeiro",
+    2: "Fevereiro",
+    3: "Março",
+    4: "Abril",
+    5: "Maio",
+    6: "Junho",
+    7: "Julho",
+    8: "Agosto",
+    9: "Setembro",
+    10: "Outubro",
+    11: "Novembro",
+    12: "Dezembro",
+}
+
+col1, col2 = st.columns(2)
+
+with col1:
+    mes_selecionado = st.selectbox(
+        "Selecione o mês",
+        options=list(MESES.keys()),
+        format_func=lambda x: MESES[x],
+    )
+
+df_comparativo = df[df["MES"] == mes_selecionado]
+
+df_comparativo = df_comparativo.sort_values(by=["ANO"], ascending=True).reset_index(drop=True)
+
+comparativo = px.bar(
+    df_comparativo,
+    x="ANO",
+    y="TOTAL_VANTAGENS",
+)
+
+comparativo.update_layout(
+    title="Total de Vantagens por Ano",
+    xaxis_title="Ano",
+    yaxis_title="Valor (R$)",
+    yaxis=dict(
+        tickformat=",.2f",
+        tickprefix="R$ ",
+        separatethousands=True
+    )
+)
+
+comparativo.update_traces(
+    hovertemplate=(
+        f"Total de Vantagens ano: %{{x}}<br>"
+        "Valor: R$ %{y:,.2f}"
+        "<extra></extra>"
+    )
+)
+
+st.plotly_chart(comparativo, width='stretch')
