@@ -84,7 +84,7 @@ df = carregar_rcl('RCL/RCL-DATA')
 st.subheader("💾 Exportar DataFrame RCL")
 csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")
 st.download_button(
-    label="📥 Baixar DataFrame (CSV)",
+    label="📥 Baixar (CSV)",
     data=csv_bytes,
     file_name="RCL_Dados.csv",
     mime="text/csv"
