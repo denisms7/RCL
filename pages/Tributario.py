@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-from data.RCL.data import carregar_rcl
+from data.rcl.data import carregar_rcl
 
 
 # ==================================================
@@ -22,7 +22,7 @@ st.title("💰 Receitas Tributárias")
 # ==================================================
 @st.cache_data
 def load_data() -> pd.DataFrame:
-    return carregar_rcl("data/RCL/RCL-DATA")
+    return carregar_rcl("data/rcl/rcl-data")
 
 
 df = load_data()
@@ -179,8 +179,6 @@ fig_geral.update_traces(
     )
 )
 
-
-
 df_total = (
     df_geral
     .groupby(coluna_periodo_geral, as_index=False)["VALOR"]
@@ -268,8 +266,7 @@ else:
 
     df_individual = (
         df_individual[
-            (df_individual["ANO"] >= ano_individual[0]) &
-            (df_individual["ANO"] <= ano_individual[1])
+            (df_individual["ANO"] >= ano_individual[0]) & (df_individual["ANO"] <= ano_individual[1])
         ]
         .sort_values("MES_ANO")
     )
@@ -297,10 +294,7 @@ fig_individual.update_traces(
     )
 )
 
-
-
 st.plotly_chart(fig_individual, width='stretch')
-
 
 # ==================================================
 # Representações Percentuais
@@ -374,14 +368,14 @@ fig_bar_tributos.update_traces(
     customdata=df_barras[["PERCENTUAL"]].values
 )
 fig_bar_tributos.update_layout(
-    yaxis={'categoryorder':'total ascending'},
+    yaxis={'categoryorder': 'total ascending'},
     uniformtext_minsize=8,
     xaxis_title="Valor (R$)",
     yaxis_title="",
     margin=dict(l=20, r=20, t=40, b=20)
 )
 
-# Proporção RCL vs Tributos
+# Proporção rcl vs Tributos
 total_rcl = df_rcl[df_rcl["ANO"] == ano_selecionado]["VALOR"].sum()
 total_tributos_sum = df_pizza_tributos["VALOR"].sum()
 
@@ -405,7 +399,7 @@ fig_rcl_vs_tributos = px.pie(
     df_proporcao,
     names="Categoria",
     values="Valor",
-    title=f"RCL: Tributos vs Outras Receitas - {ano_selecionado}",
+    title=f"rcl: Tributos vs Outras Receitas - {ano_selecionado}",
     color_discrete_sequence=px.colors.qualitative.Set2
 )
 fig_rcl_vs_tributos.update_traces(
@@ -413,7 +407,7 @@ fig_rcl_vs_tributos.update_traces(
         "<b>%{label}</b><br>"
         "Valor: R$ %{value:,.2f}<br>"
         "Percentual: %{percent}<br>"
-        "Total RCL: R$ " + f"{total_rcl:,.2f}<br>"
+        "Total rcl: R$ " + f"{total_rcl:,.2f}<br>"
         "<extra></extra>"
     ),
     textposition='inside',
@@ -421,7 +415,7 @@ fig_rcl_vs_tributos.update_traces(
     pull=[0.05, 0]  # destaca a fatia de Tributos
 )
 
-# Composição da RCL
+# Composição da rcl
 df_composicao = calcular_composicao_liquida(
     df_composicao_base,
     ano_selecionado,
@@ -435,7 +429,7 @@ fig_composicao = px.pie(
     df_composicao,
     names="ESPECIFICACAO",
     values="VALOR",
-    title=f"Composição Líquida da RCL - {ano_selecionado}",
+    title=f"Composição Líquida da rcl - {ano_selecionado}",
     color_discrete_sequence=px.colors.qualitative.Pastel
 )
 fig_composicao.update_traces(

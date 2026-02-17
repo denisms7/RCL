@@ -4,7 +4,7 @@ import numpy as np
 import plotly.graph_objects as go
 from prophet import Prophet
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-from data.RCL.data import carregar_rcl
+from data.rcl.data import carregar_rcl
 
 
 # ==================================================
@@ -25,9 +25,10 @@ st.subheader("Machine Learning - Prophet")
 # ==================================================
 @st.cache_data
 def carregar_dados() -> pd.DataFrame:
-    df_local = carregar_rcl("data/RCL/RCL-DATA")
+    df_local = carregar_rcl("data/rcl/rcl-data")
     df_local = df_local.sort_values("MES_ANO")
     return df_local
+
 
 df = carregar_dados()
 
@@ -129,7 +130,7 @@ st.markdown("---")
 # TREINAMENTO DO MODELO
 # ==================================================
 with st.spinner("🤖 Treinando modelo Prophet..."):
-    
+
     modelo = Prophet(
         yearly_seasonality=True,
         weekly_seasonality=False,
@@ -170,7 +171,7 @@ if not test.empty:
     )
 
     if not forecast_test.empty:
-        
+
         y_true = forecast_test["y"]
         y_pred = forecast_test["yhat"]
 
@@ -243,7 +244,7 @@ if not test.empty:
             st.warning("⚠️ Precisão moderada.")
         else:
             st.error("❌ Baixa precisão. Recomenda-se revisão.")
-        
+
         st.markdown("---")
 
 
@@ -349,17 +350,17 @@ st.plotly_chart(fig, width='stretch')
 # ANÁLISE DETALHADA DE ERROS (opcional)
 # ==================================================
 if not test.empty and not forecast_test.empty:
-    
+
     with st.expander("📉 Ver Análise Detalhada de Erros no Período de Teste"):
-        
+
         # Calcula erros
         df_erros = forecast_test.copy()
         df_erros["erro"] = df_erros["yhat"] - df_erros["y"]
         df_erros["erro_perc"] = (df_erros["erro"] / df_erros["y"]) * 100
-        
+
         # Gráfico de barras dos erros
         fig_erro = go.Figure()
-        
+
         fig_erro.add_trace(
             go.Bar(
                 x=df_erros["ds"],
@@ -368,7 +369,7 @@ if not test.empty and not forecast_test.empty:
                 marker_color=["red" if e < 0 else "green" for e in df_erros["erro"]]
             )
         )
-        
+
         fig_erro.update_layout(
             title="Erro por Mês (Positivo = Superestimou | Negativo = Subestimou)",
             xaxis_title="Mês",
@@ -377,12 +378,12 @@ if not test.empty and not forecast_test.empty:
             template="plotly_white",
             showlegend=False
         )
-        
+
         st.plotly_chart(fig_erro, width='stretch')
-        
+
         # Tabela detalhada
         st.subheader("Detalhamento Mês a Mês")
-        
+
         df_tabela_erros = df_erros[["ds", "y", "yhat", "erro", "erro_perc"]].copy()
         df_tabela_erros.columns = ["Data", "Real", "Previsto", "Erro (R$)", "Erro (%)"]
         df_tabela_erros["Data"] = df_tabela_erros["Data"].dt.strftime("%m/%Y")
@@ -390,7 +391,7 @@ if not test.empty and not forecast_test.empty:
         df_tabela_erros["Previsto"] = df_tabela_erros["Previsto"].apply(lambda x: f"R$ {x:,.2f}")
         df_tabela_erros["Erro (R$)"] = df_tabela_erros["Erro (R$)"].apply(lambda x: f"R$ {x:,.2f}")
         df_tabela_erros["Erro (%)"] = df_tabela_erros["Erro (%)"].apply(lambda x: f"{x:.1f}%")
-        
+
         st.dataframe(df_tabela_erros, width='stretch', hide_index=True)
 
 
@@ -409,7 +410,7 @@ df_futuro = forecast.loc[
 if df_futuro.empty:
     st.warning("⚠️ Não há previsões futuras disponíveis.")
 else:
-    
+
     # Prepara tabela formatada
     df_tabela = pd.DataFrame({
         "Mês/Ano": df_futuro["ds"].dt.strftime("%m/%Y"),
@@ -419,9 +420,9 @@ else:
     })
 
     df_tabela.insert(0, "Especificação", especificacao)
-    
+
     st.dataframe(df_tabela, width='stretch', hide_index=True)
-    
+
     # Botão de download
     csv = df_tabela.to_csv(index=False, sep=";").encode("utf-8")
     st.download_button(
@@ -440,48 +441,48 @@ st.markdown("---")
 with st.expander("📚 Como Interpretar os Indicadores de Erro"):
     st.markdown("""
     ### 📊 Guia de Interpretação das Métricas
-    
+
     #### **MAE (Erro Médio Absoluto)**
-    Indica, em média, quanto a previsão errou em valor absoluto (R$).  
+    Indica, em média, quanto a previsão errou em valor absoluto (R$).
     O percentual representa o erro em relação à média da receita no período.
-    
-    - ✅ Até 10% → Excelente  
-    - 🟢 10% a 20% → Bom  
-    - 🟡 20% a 30% → Aceitável  
-    - 🔴 Acima de 30% → Modelo precisa de ajuste  
-    
+
+    - ✅ Até 10% → Excelente
+    - 🟢 10% a 20% → Bom
+    - 🟡 20% a 30% → Aceitável
+    - 🔴 Acima de 30% → Modelo precisa de ajuste
+
     ---
-    
+
     #### **RMSE (Raiz do Erro Quadrático Médio)**
-    Similar ao MAE, porém penaliza mais os erros grandes.  
+    Similar ao MAE, porém penaliza mais os erros grandes.
     Quando o RMSE é muito maior que o MAE, indica picos de erro em alguns meses.
-    
-    - ✅ Até 15% → Muito bom  
-    - 🟢 15% a 30% → Utilizável  
-    - 🔴 Acima de 30% → Alta volatilidade ou baixa precisão  
-    
+
+    - ✅ Até 15% → Muito bom
+    - 🟢 15% a 30% → Utilizável
+    - 🔴 Acima de 30% → Alta volatilidade ou baixa precisão
+
     ---
-    
+
     #### **MAPE (Erro Percentual Médio Absoluto)**
     Mostra o erro percentual médio. É o mais intuitivo para planejamento orçamentário.
-    
-    - ✅ Até 10% → Alta confiabilidade  
-    - 🟢 10% a 20% → Confiável  
-    - 🟡 20% a 30% → Moderado  
-    - 🟠 30% a 40% → Baixa precisão  
-    - 🔴 Acima de 40% → Não recomendado para decisões estratégicas  
-    
+
+    - ✅ Até 10% → Alta confiabilidade
+    - 🟢 10% a 20% → Confiável
+    - 🟡 20% a 30% → Moderado
+    - 🟠 30% a 40% → Baixa precisão
+    - 🔴 Acima de 40% → Não recomendado para decisões estratégicas
+
     ---
-    
+
     #### **Viés**
     Indica se o modelo tem tendência sistemática de superestimar ou subestimar.
-    
+
     - **Superestima:** Previsões consistentemente maiores que valores reais
     - **Subestima:** Previsões consistentemente menores que valores reais
     - **Ideal:** Viés próximo de zero (erros equilibrados)
-    
+
     ---
-    
+
     #### ⚠️ **Observações Importantes**
     - Valores elevados podem ocorrer em receitas muito voláteis
     - Sazonalidade forte pode aumentar os erros
@@ -492,40 +493,40 @@ with st.expander("📚 Como Interpretar os Indicadores de Erro"):
 with st.expander("ℹ️ Sobre o Modelo de Previsão"):
     st.markdown("""
     ### 🤖 Metodologia
-    
-    Este sistema utiliza o **Prophet**, desenvolvido pelo Facebook/Meta, 
+
+    Este sistema utiliza o **Prophet**, desenvolvido pelo Facebook/Meta,
     um modelo de previsão de séries temporais que:
-    
+
     - 📈 Detecta automaticamente tendências e sazonalidades
     - 📊 Lida bem com dados faltantes e outliers
     - 🔄 Considera sazonalidade anual
     - 📉 **Usa transformação logarítmica** para estabilizar variância e capturar crescimento exponencial (essencial para receitas públicas)
     - ✅ Valida o modelo com os últimos 12 meses de dados históricos
-    
+
     ---
-    
+
     ### ⚙️ Configurações Aplicadas
-    
+
     - **Sazonalidade:** Multiplicativa (ideal para dados que crescem proporcionalmente)
     - **Intervalo de Confiança:** 95%
     - **Validação:** Últimos 12 meses separados para teste
     - **Transformação:** Logarítmica (log1p/expm1) para estabilizar série
-    
+
     ---
-    
+
     ### 🔬 Por Que Transformação Log?
-    
-    Receitas públicas geralmente crescem de forma **percentual** (ex: 10% ao ano), 
+
+    Receitas públicas geralmente crescem de forma **percentual** (ex: 10% ao ano),
     não em valores absolutos.
-    
+
     **Sem transformação log:**
     - Modelo aprende: +R$ 100.000 por ano (linear)
     - Erro cresce com o tempo
-    
+
     **Com transformação log:**
     - Modelo aprende: +10% por ano (exponencial)
     - Captura o padrão real de crescimento
     - Erros proporcionais ao nível
-    
+
     **Resultado:** Previsões muito mais precisas! ✅
     """)

@@ -16,9 +16,7 @@ def carregar_folha(diretorio: str) -> pd.DataFrame:
     df["Mês"] = pd.to_numeric(df["Mês"], errors="coerce").astype("Int64")
 
     df["MES_ANO"] = (
-        df["Mês"].astype(str).str.zfill(2)
-        + "/"
-        + df["Ano"].astype(str)
+        df["Mês"].astype(str).str.zfill(2) + "/" + df["Ano"].astype(str)
     )
 
     # ==================================================

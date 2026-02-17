@@ -1,9 +1,9 @@
 import streamlit as st
 import plotly.express as px
-from data.FOLHA.data import carregar_folha
+from data.folha.data import carregar_folha
 
 
-df = carregar_folha('data/FOLHA/FOLHA-DATA/Folha_Geral.xls')
+df = carregar_folha('data/folha/folha-data/Folha_Geral.xls')
 
 
 # -------------------------------------------------
@@ -62,11 +62,9 @@ with col2:
 with col3:
     st.metric(
         label="Mêses Ausentes",
-        value=zeros, 
+        value=zeros,
         help=f"Quantidade de meses com total vantagens zero: {ano_inicio} a {ano_fim} (Ausentes no Portal da Transparência)"
     )
-
-
 
 tipo_dado = st.segmented_control(
     "Tipo de Visualização",
@@ -74,7 +72,7 @@ tipo_dado = st.segmented_control(
         "Grafico Mensal",
         "Grafico Anual",
         "Tabela de Dados",
-        ],
+    ],
     default="Grafico Mensal",
 )
 
@@ -85,10 +83,10 @@ if tipo_dado == "Grafico Mensal":
         x="MES_ANO",
         y="TOTAL_VANTAGENS",
         markers=True,
-        )
-    
+    )
+
     fig_mensal.update_layout(
-        title=f"Total de Vantagens por Mês",
+        title="Total de Vantagens por Mês",
         xaxis_title="Mês",
         yaxis_title="Valor (R$)",
         yaxis=dict(
@@ -114,10 +112,10 @@ elif tipo_dado == "Grafico Anual":
         df_anual,
         x="ANO",
         y="TOTAL_VANTAGENS",
-        )
-    
+    )
+
     fig_anual.update_layout(
-        title=f"Total de Vantagens por Ano",
+        title="Total de Vantagens por Ano",
         xaxis_title="Ano",
         yaxis_title="Valor (R$)",
         yaxis=dict(

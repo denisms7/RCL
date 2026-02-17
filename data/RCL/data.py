@@ -4,10 +4,10 @@ import pandas as pd
 
 
 RENOMEANDO_COLUNAS = {
-        "RECEITA CORRENTE LÍQUIDA (I-II)": "RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
-        "Outras receitas tributárias": "Outros Impostos, Taxas e Contribuições de Melhoria",
-        "Receita tributária": "Impostos, Taxas e Contribuições de Melhoria",
-    }
+    "RECEITA CORRENTE LÍQUIDA (I-II)": "RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
+    "Outras receitas tributárias": "Outros Impostos, Taxas e Contribuições de Melhoria",
+    "Receita tributária": "Impostos, Taxas e Contribuições de Melhoria",
+}
 
 
 # Função para converter valores com parênteses em negativos
@@ -31,10 +31,10 @@ def carregar_rcl(diretorio: str) -> pd.DataFrame:
     if not caminho.exists():
         raise FileNotFoundError(f"Diretório não encontrado: {diretorio}")
 
-    arquivos: List[Path] = sorted(caminho.glob("RCL-*.xls"))
+    arquivos: List[Path] = sorted(caminho.glob("rcl-*.xls"))
 
     if not arquivos:
-        raise FileNotFoundError("Nenhum arquivo RCL-*.xls encontrado.")
+        raise FileNotFoundError("Nenhum arquivo rcl-*.xls encontrado.")
 
     lista_dfs: List[pd.DataFrame] = []
 
@@ -98,10 +98,7 @@ def carregar_rcl(diretorio: str) -> pd.DataFrame:
 
         lista_dfs.append(df_long)
 
-
     df_final = pd.concat(lista_dfs, ignore_index=True)
-
-
 
     df_final["ESPECIFICACAO"] = df_final["ESPECIFICACAO"].replace(RENOMEANDO_COLUNAS)
 

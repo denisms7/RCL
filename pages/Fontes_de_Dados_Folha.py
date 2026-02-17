@@ -1,7 +1,6 @@
 # app.py
 import streamlit as st
-from pathlib import Path
-from data.FOLHA.data import carregar_folha
+from data.folha.data import carregar_folha
 
 
 # ==================================================
@@ -28,9 +27,9 @@ st.link_button(
 # ==================================================
 # Botão para exportar DataFrame
 # ==================================================
-df = carregar_folha('data/FOLHA/FOLHA-DATA/Folha_Geral.xls')
+df = carregar_folha('data/folha/folha-data/Folha_Geral.xls')
 
-st.subheader("💾 Exportar DataFrame RCL")
+st.subheader("💾 Exportar DataFrame rcl")
 csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")
 st.download_button(
     label="📥 Baixar (CSV)",

@@ -1,7 +1,7 @@
 # app.py
 import streamlit as st
 from pathlib import Path
-from data.RCL.data import carregar_rcl, RENOMEANDO_COLUNAS 
+from data.rcl.data import carregar_rcl, RENOMEANDO_COLUNAS
 
 
 # ==================================================
@@ -28,8 +28,9 @@ st.link_button(
 # ==================================================
 # Lista de PDFs e criação dos botões em linha
 # ==================================================
-pdf_dir = Path("data/RCL/RCL-PDF")  # caminho da pasta com os PDFs
+pdf_dir = Path("data/rcl/rcl-pdf")  # caminho da pasta com os PDFs
 pdf_files = sorted(pdf_dir.glob("*.pdf"))  # pega todos os PDFs
+
 
 # Função para exibir o PDF no modal
 @st.dialog("Visualizar PDF", width="large")
@@ -37,10 +38,10 @@ def mostrar_pdf(pdf_path, nome):
     st.subheader(f"📄 {nome}")
     with open(pdf_path, "rb") as f:
         pdf_bytes = f.read()
-    
+
     # Exibir o PDF
     st.pdf(pdf_bytes, height=600)
-    
+
     # Botão de download dentro do modal
     st.download_button(
         label=f"📥 Baixar {nome}",
@@ -50,22 +51,24 @@ def mostrar_pdf(pdf_path, nome):
         use_container_width=True
     )
 
+
 if pdf_files:
     st.subheader("📄 PDFs de Receita Corrente Líquida")
-    
+
     # Criar colunas dinamicamente
     num_colunas = 5  # quantos botões por linha
     colunas = st.columns(num_colunas)
-    
+
     for i, pdf in enumerate(pdf_files):
         col = colunas[i % num_colunas]  # seleciona a coluna correta
         nome_arquivo = pdf.stem  # ex: 2013
-        
+
         # Botão para abrir o modal
         if col.button(f"📄 {nome_arquivo}", key=f"btn_{i}", use_container_width=True):
             mostrar_pdf(pdf, f"{nome_arquivo}.pdf")
+
 else:
-    st.info("Nenhum PDF encontrado na pasta RCL-PDF.")
+    st.info("Nenhum PDF encontrado na pasta rcl-pdf.")
 
 st.subheader("ℹ️ Observações sobre dados renomeados")
 
@@ -79,7 +82,7 @@ for original, novo in RENOMEANDO_COLUNAS.items():
 # ==================================================
 # Botão para exportar DataFrame
 # ==================================================
-df = carregar_rcl('data/RCL/RCL-DATA')
+df = carregar_rcl('data/rcl/rcl-data')
 
 st.subheader("💾 Exportar DataFrame RCL")
 csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")

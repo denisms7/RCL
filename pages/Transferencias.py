@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-from data.RCL.data import carregar_rcl
+from data.rcl.data import carregar_rcl
 
 
 # ==================================================
@@ -22,7 +22,7 @@ st.title("💰 Transferências Correntes")
 # ==================================================
 @st.cache_data
 def load_data() -> pd.DataFrame:
-    return carregar_rcl("data/RCL/RCL-DATA")
+    return carregar_rcl("data/rcl/rcl-data")
 
 
 df = load_data()
@@ -166,8 +166,6 @@ with col_a:
 with col_b:
     st.plotly_chart(fig_total_linha, width='stretch')
 
-
-
 ano_individual = st.slider(
     "Selecione o ano",
     min_value=ano_min,
@@ -186,8 +184,6 @@ df_individual = (
     .sum()
     .sort_values("VALOR", ascending=False)
 )
-
-
 
 
 # ==================================================
@@ -254,23 +250,18 @@ with col1:
 with col2:
     st.plotly_chart(fig_barra, width='stretch')
 
-
-
-
-# 🔹 Total RCL no ano
+# Total rcl no ano
 total_rcl = (
     df[df["ANO"] == ano_individual]
     .loc[df["ESPECIFICACAO"] == RCL_LABEL, "VALOR"]
     .sum()
 )
 
-# 🔹 Total Transferências no ano
+# Total Transferências no ano
 total_transferencias = (
     df[
-        (df["ANO"] == ano_individual) &
-        (df["ESPECIFICACAO"].isin(TIPOS_TRIBUTARIOS))
-    ]["VALOR"]
-    .sum()
+        (df["ANO"] == ano_individual) & (df["ESPECIFICACAO"].isin(TIPOS_TRIBUTARIOS))
+    ]["VALOR"].sum()
 )
 
 df_proporcao_transferencias = pd.DataFrame(

@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 pages = {
     "Receitas": [
         st.Page("pages/rcl.py", title="Receita Corrente Geral"),
@@ -13,7 +14,6 @@ pages = {
         st.Page("pages/Fontes_de_Dados_Folha.py", title="Fontes de Dados"),
     ],
 }
-
 
 pg = st.navigation(pages)
 pg.run()

@@ -1,9 +1,9 @@
 import streamlit as st
 import plotly.express as px
-from data.RCL.data import carregar_rcl
+from data.rcl.data import carregar_rcl
 
 
-df = carregar_rcl('data/RCL/RCL-DATA')
+df = carregar_rcl('data/rcl/rcl-data')
 
 
 # -------------------------------------------------
@@ -107,7 +107,7 @@ anexo_rcl = st.pills(
         "RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
         "RECEITAS CORRENTES (I)",
         "DEDUÇÕES (II)",
-        ],
+    ],
     default="RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
 )
 
@@ -126,7 +126,7 @@ anexo_rcl_tipo = st.segmented_control(
         "Grafico Mensal",
         "Grafico Anual",
         "Tabela de Dados",
-        ],
+    ],
     default="Grafico Mensal",
 )
 

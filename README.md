@@ -1,4 +1,4 @@
-# RCL
+# rcl
 
 ### Frameworks
 - WebApp Streamlit

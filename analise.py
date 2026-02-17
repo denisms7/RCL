@@ -18,10 +18,10 @@ def carregar_arquivos(diretorio: str) -> pd.DataFrame:
     if not caminho.exists():
         raise FileNotFoundError(f"Diretório não encontrado: {diretorio}")
 
-    arquivos: List[Path] = sorted(caminho.glob("RCL-*.xls"))
+    arquivos: List[Path] = sorted(caminho.glob("rcl-*.xls"))
 
     if not arquivos:
-        raise FileNotFoundError("Nenhum arquivo RCL-*.xls encontrado.")
+        raise FileNotFoundError("Nenhum arquivo rcl-*.xls encontrado.")
 
     lista_dfs: List[pd.DataFrame] = []
 
@@ -75,9 +75,6 @@ def carregar_arquivos(diretorio: str) -> pd.DataFrame:
             columns={"ESPECIFICAÇÃO": "ESPECIFICACAO"}
         )
 
-        
-        
-
         lista_dfs.append(df_long)
 
     df_final = pd.concat(lista_dfs, ignore_index=True)
@@ -86,7 +83,7 @@ def carregar_arquivos(diretorio: str) -> pd.DataFrame:
 
 
 
-df_rcl = carregar_arquivos("RCL-DATA")
+df_rcl = carregar_arquivos("rcl-data")
 
 variaveis = df_rcl["ESPECIFICACAO"].unique().tolist()
 
@@ -108,7 +105,6 @@ df_rcl["ESPECIFICACAO"] = df_rcl["ESPECIFICACAO"].replace(
 )
 
 
-
 uteis = [
     #  Impostos, Taxas e Contribuições de Melhoria
     "IPTU",
@@ -121,12 +117,11 @@ uteis = [
     "Contribuições",
     
     "Receita de contribuições", # 2015
-    
+
     # Receita patrimonial
     "Rendimentos de Aplicação Financeira",
     "Outras Receitas Patrimoniais",
-    
-    
+
     "Receita agropecuária",
     "Receita industrial",
     "Receita de serviços",
