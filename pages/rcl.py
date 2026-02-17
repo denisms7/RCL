@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.express as px
-from data.data import carregar_rcl
+from RCL.data import carregar_rcl
 
 
 df = carregar_rcl('RCL/RCL-DATA')

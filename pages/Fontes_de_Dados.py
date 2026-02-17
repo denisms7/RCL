@@ -1,7 +1,7 @@
 # app.py
 import streamlit as st
 from pathlib import Path
-from data.data import carregar_rcl, RENOMEANDO_COLUNAS 
+from RCL.data import carregar_rcl, RENOMEANDO_COLUNAS 
 
 
 # ==================================================
