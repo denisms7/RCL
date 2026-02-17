@@ -1,9 +1,9 @@
 import streamlit as st
 import plotly.express as px
-from FOLHA.data import carregar_folha
+from data.FOLHA.data import carregar_folha
 
 
-df = carregar_folha('FOLHA/FOLHA-DATA/Folha_Geral.xls')
+df = carregar_folha('data/FOLHA/FOLHA-DATA/Folha_Geral.xls')
 
 
 # -------------------------------------------------

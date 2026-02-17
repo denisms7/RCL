@@ -1,7 +1,7 @@
 # app.py
 import streamlit as st
 from pathlib import Path
-from RCL.data import carregar_rcl, RENOMEANDO_COLUNAS 
+from data.RCL.data import carregar_rcl, RENOMEANDO_COLUNAS 
 
 
 # ==================================================
@@ -28,7 +28,7 @@ st.link_button(
 # ==================================================
 # Lista de PDFs e criação dos botões em linha
 # ==================================================
-pdf_dir = Path("RCL/RCL-PDF")  # caminho da pasta com os PDFs
+pdf_dir = Path("data/RCL/RCL-PDF")  # caminho da pasta com os PDFs
 pdf_files = sorted(pdf_dir.glob("*.pdf"))  # pega todos os PDFs
 
 # Função para exibir o PDF no modal
@@ -79,7 +79,7 @@ for original, novo in RENOMEANDO_COLUNAS.items():
 # ==================================================
 # Botão para exportar DataFrame
 # ==================================================
-df = carregar_rcl('RCL/RCL-DATA')
+df = carregar_rcl('data/RCL/RCL-DATA')
 
 st.subheader("💾 Exportar DataFrame RCL")
 csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")

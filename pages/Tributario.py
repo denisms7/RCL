@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-from RCL.data import carregar_rcl
+from data.RCL.data import carregar_rcl
 
 
 # ==================================================
@@ -22,7 +22,7 @@ st.title("💰 Receitas Tributárias")
 # ==================================================
 @st.cache_data
 def load_data() -> pd.DataFrame:
-    return carregar_rcl("RCL/RCL-DATA")
+    return carregar_rcl("data/RCL/RCL-DATA")
 
 
 df = load_data()
