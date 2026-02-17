@@ -31,7 +31,7 @@ def carregar_rcl(diretorio: str) -> pd.DataFrame:
     if not caminho.exists():
         raise FileNotFoundError(f"Diretório não encontrado: {diretorio}")
 
-    arquivos: List[Path] = sorted(caminho.glob("rcl-*.xls"))
+    arquivos: List[Path] = sorted(caminho.glob("RCL-*.xls"))
 
     if not arquivos:
         raise FileNotFoundError("Nenhum arquivo rcl-*.xls encontrado.")
