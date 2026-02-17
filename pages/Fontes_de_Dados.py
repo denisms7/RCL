@@ -8,12 +8,12 @@ from RCL.data import carregar_rcl, RENOMEANDO_COLUNAS
 # Configuração da página
 # ==================================================
 st.set_page_config(
-    page_title="Fontes de Dados",
+    page_title="Fontes de Dados RCL",
     page_icon="🗂️",
     layout="wide"
 )
 
-st.title("🗂️ Fontes de Dados")
+st.title("🗂️ Fontes de Dados RCL")
 
 
 # -------------------------------------------------

@@ -1,0 +1,40 @@
+# app.py
+import streamlit as st
+from pathlib import Path
+from FOLHA.data import carregar_folha
+
+
+# ==================================================
+# Configuração da página
+# ==================================================
+st.set_page_config(
+    page_title="Fontes de Dados - Folha",
+    page_icon="🗂️",
+    layout="wide"
+)
+
+st.title("🗂️ Fontes de Dados - Folha")
+
+
+# -------------------------------------------------
+# Fonte
+# -------------------------------------------------
+st.link_button(
+    "🔗 Portal da Transparência",
+    "https://centenariodosulpr.equiplano.com.br:7508/transparencia/srhRelacaoDeServidoresSalariosDetalhado/listEntidades"
+)
+
+
+# ==================================================
+# Botão para exportar DataFrame
+# ==================================================
+df = carregar_folha('FOLHA/FOLHA-DATA/Folha_Geral.xls')
+
+st.subheader("💾 Exportar DataFrame RCL")
+csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")
+st.download_button(
+    label="📥 Baixar (CSV)",
+    data=csv_bytes,
+    file_name="Folha_Pagamento.csv",
+    mime="text/csv"
+)

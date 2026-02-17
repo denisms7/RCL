@@ -16,8 +16,8 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("📈 Previsão de Receitas - Machine Learning")
-st.markdown("---")
+st.title("📈 Previsão de Receitas")
+st.subheader("Machine Learning - Prophet")
 
 
 # ==================================================
