@@ -49,21 +49,21 @@ with col1:
     st.metric(
         label="Anos",
         value=anos,
-        help=f"Quantidade de anos registrados: {ano_min} a {ano_max}"
+        help=f"Quantidade de anos registrados: {ano_inicio} a {ano_fim}"
     )
 
 with col2:
     st.metric(
         label="Mêses",
         value=meses,
-        help=f"Quantidade de meses registrados: {ano_min} a {ano_max}"
+        help=f"Quantidade de meses registrados: {ano_inicio} a {ano_fim}"
     )
 
 with col3:
     st.metric(
         label="Mêses Ausentes",
         value=zeros, 
-        help=f"Quantidade de meses com total vantagens zero: {ano_min} a {ano_max} (Ausentes no Portal da Transparência)"
+        help=f"Quantidade de meses com total vantagens zero: {ano_inicio} a {ano_fim} (Ausentes no Portal da Transparência)"
     )
 
 
