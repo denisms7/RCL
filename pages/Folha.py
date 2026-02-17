@@ -1,9 +1,6 @@
 import streamlit as st
 import plotly.express as px
-from data.folha.data import carregar_folha
-
-
-df = carregar_folha('data/folha/folha-data/Folha_Geral.xls')
+from data.folha.data import load_data_folha
 
 
 # -------------------------------------------------
@@ -17,6 +14,8 @@ st.set_page_config(
 
 st.title("👤 Folha de Pagamento")
 
+with st.spinner("Carregando dados..."):
+    df = load_data_folha()
 
 # -------------------------------------------------
 # Filtrar período 👤

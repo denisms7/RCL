@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-from data.rcl.data import carregar_rcl
+from data.rcl.data import load_data_rcl
 
 
 # ==================================================
@@ -20,12 +20,8 @@ st.title("💰 Receitas Tributárias")
 # ==================================================
 # Carregamento de Dados
 # ==================================================
-@st.cache_data
-def load_data() -> pd.DataFrame:
-    return carregar_rcl("data/rcl/rcl-data")
-
-
-df = load_data()
+with st.spinner("Carregando dados..."):
+    df = load_data_rcl()
 
 
 # ==================================================
@@ -221,7 +217,7 @@ with col2:
 
 
 # ==================================================
-# Evolução Individual (CORRIGIDO)
+# Evolução Individual
 # ==================================================
 st.subheader("📈 Evolução Individual")
 

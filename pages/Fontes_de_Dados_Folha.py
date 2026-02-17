@@ -1,6 +1,6 @@
 # app.py
 import streamlit as st
-from data.folha.data import carregar_folha
+from data.folha.data import load_data_folha
 
 
 # ==================================================
@@ -14,6 +14,8 @@ st.set_page_config(
 
 st.title("🗂️ Fontes de Dados - Folha")
 
+with st.spinner("Carregando dados..."):
+    df = load_data_folha()
 
 # -------------------------------------------------
 # Fonte
@@ -27,7 +29,7 @@ st.link_button(
 # ==================================================
 # Botão para exportar DataFrame
 # ==================================================
-df = carregar_folha('data/folha/folha-data/Folha_Geral.xls')
+
 
 st.subheader("💾 Exportar DataFrame rcl")
 csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")

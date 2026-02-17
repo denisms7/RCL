@@ -1,7 +1,7 @@
 # app.py
 import streamlit as st
 from pathlib import Path
-from data.rcl.data import carregar_rcl, RENOMEANDO_COLUNAS
+from data.rcl.data import load_data_rcl, RENOMEANDO_COLUNAS
 
 
 # ==================================================
@@ -15,6 +15,11 @@ st.set_page_config(
 
 st.title("🗂️ Fontes de Dados RCL")
 
+# ==================================================
+# Carregamento de Dados
+# ==================================================
+with st.spinner("Carregando dados..."):
+    df = load_data_rcl()
 
 # -------------------------------------------------
 # Fonte
@@ -82,7 +87,6 @@ for original, novo in RENOMEANDO_COLUNAS.items():
 # ==================================================
 # Botão para exportar DataFrame
 # ==================================================
-df = carregar_rcl('data/rcl/rcl-data')
 
 st.subheader("💾 Exportar DataFrame RCL")
 csv_bytes = df.to_csv(index=False, sep=";").encode("utf-8")

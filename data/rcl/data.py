@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List
 import pandas as pd
+import streamlit as st
 
 
 RENOMEANDO_COLUNAS = {
@@ -103,3 +104,9 @@ def carregar_rcl(diretorio: str) -> pd.DataFrame:
     df_final["ESPECIFICACAO"] = df_final["ESPECIFICACAO"].replace(RENOMEANDO_COLUNAS)
 
     return df_final
+
+
+@st.cache_data
+def load_data_rcl():
+    df = carregar_rcl("data/rcl/rcl-data")
+    return df

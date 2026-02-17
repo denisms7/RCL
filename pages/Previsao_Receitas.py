@@ -4,7 +4,7 @@ import numpy as np
 import plotly.graph_objects as go
 from prophet import Prophet
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-from data.rcl.data import carregar_rcl
+from data.rcl.data import load_data_rcl
 
 
 # ==================================================
@@ -21,16 +21,10 @@ st.subheader("Machine Learning - Prophet")
 
 
 # ==================================================
-# CARREGAMENTO DE DADOS
+# Carregamento de Dados
 # ==================================================
-@st.cache_data
-def carregar_dados() -> pd.DataFrame:
-    df_local = carregar_rcl("data/rcl/rcl-data")
-    df_local = df_local.sort_values("MES_ANO")
-    return df_local
-
-
-df = carregar_dados()
+with st.spinner("Carregando dados..."):
+    df = load_data_rcl()
 
 
 # ==================================================

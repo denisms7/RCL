@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-from data.rcl.data import carregar_rcl
+from data.rcl.data import load_data_rcl
 
 
 # ==================================================
@@ -20,12 +20,9 @@ st.title("💰 Transferências Correntes")
 # ==================================================
 # Carregamento de Dados
 # ==================================================
-@st.cache_data
-def load_data() -> pd.DataFrame:
-    return carregar_rcl("data/rcl/rcl-data")
+with st.spinner("Carregando dados..."):
+    df = load_data_rcl()
 
-
-df = load_data()
 
 TIPOS_TRIBUTARIOS = [
     "Cota parte do FPM",
@@ -101,10 +98,6 @@ if tipo_visualizacao_geral == "Mensal":
             "<extra></extra>"
         )
     )
-
-
-    # ==================================================
-    # Gráfico por Especificação
     # ==================================================
     fig_total_linha = px.line(
         df_linha,
@@ -182,9 +175,6 @@ elif tipo_visualizacao_geral == "Anual":
         )
     )
 
-
-    # ==================================================
-    # Gráfico por Especificação
     # ==================================================
     fig_total_linha = px.line(
         df_linha,
@@ -246,8 +236,6 @@ df_individual = (
     .sum()
     .sort_values("VALOR", ascending=False)
 )
-
-
 
 fig_pizza = px.pie(
     df_individual,

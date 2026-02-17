@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import streamlit as st
 
 
 def carregar_folha(diretorio: str) -> pd.DataFrame:
@@ -65,4 +66,10 @@ def carregar_folha(diretorio: str) -> pd.DataFrame:
         format="%m/%Y"
     )
 
+    return df
+
+
+@st.cache_data
+def load_data_folha():
+    df = carregar_folha("data/folha/folha-data/Folha_Geral.xls")
     return df

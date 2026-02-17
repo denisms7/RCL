@@ -1,9 +1,6 @@
 import streamlit as st
 import plotly.express as px
-from data.rcl.data import carregar_rcl
-
-
-df = carregar_rcl('data/rcl/rcl-data')
+from data.rcl.data import load_data_rcl
 
 
 # -------------------------------------------------
@@ -16,6 +13,13 @@ st.set_page_config(
 )
 
 st.title("💰 Receita Corrente Geral")
+
+
+# ==================================================
+# Carregamento de Dados
+# ==================================================
+with st.spinner("Carregando dados..."):
+    df = load_data_rcl()
 
 
 # -------------------------------------------------
@@ -111,7 +115,7 @@ anexo_rcl = st.pills(
     default="RECEITA CORRENTE LÍQUIDA (III) = (I - II)",
 )
 
-if anexo_rcl == None:
+if anexo_rcl is None:
     st.warning("Selecione um tipo de receita válido.")
     st.stop()
 
@@ -211,8 +215,9 @@ else:
     st.warning("Selecione um tipo de visualização válido.")
 
 
-
-
+# -------------------------------------------------
+# INFORMACAO
+# -------------------------------------------------
 if anexo_rcl == "RECEITA CORRENTE LÍQUIDA (III) = (I - II)":
     st.markdown(
         "A **Receita Corrente Líquida (RCL)** é um indicador fundamental para a gestão financeira dos municípios, pois representa a receita disponível após as deduções legais. Ela é calculada subtraindo as deduções (II) das receitas correntes (I). A RCL é utilizada para determinar os limites de gastos públicos, como o percentual destinado à educação e saúde, e para avaliar a capacidade financeira do município. Manter uma RCL saudável é crucial para garantir a sustentabilidade fiscal e a capacidade de investimento em serviços públicos essenciais."
