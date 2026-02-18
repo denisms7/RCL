@@ -93,12 +93,41 @@ with col5:
 if len(df_negativo) > 0:
     with st.expander("📉 Valores de entrada negativos"):
         df_neg = df[df["VALOR"] < 0].copy()
+
         # Seleciona apenas as colunas relevantes
         df_neg = df_neg[["ANO", "MES_ANO", "ESPECIFICACAO", "VALOR"]]
-        # Formata VALOR em reais
-        df_neg["VALOR"] = df_neg["VALOR"].apply(lambda x: f"R$ {x:,.2f}")
-        st.dataframe(df_neg)
 
+        # Calcula o total
+        df_neg_total = df_neg["VALOR"].sum() * -1
+        df_neg_min = df_neg["VALOR"].min() * -1
+        df_neg_max = df_neg["VALOR"].max() * -1
+
+        # Formata VALOR em reais (somente para exibição)
+        df_neg["VALOR"] = df_neg["VALOR"].apply(lambda x: f"R$ {x:,.2f}")
+
+        cola, colb, colc = st.columns(3)
+
+        # Mostra metricas formatado
+        with cola:
+            st.metric(
+                label="Total de Valores Negativos",
+                value=f"R$ {df_neg_total:,.2f}"
+            )
+
+        with colb:
+            st.metric(
+                label="Maior Negativo",
+                value=f"R$ {df_neg_min:,.2f}"
+            )
+
+        with colc:
+            st.metric(
+                label="Menor Negativo",
+                value=f"R$ {df_neg_max:,.2f}"
+            )
+
+        # Mostra tabela
+        st.dataframe(df_neg)
 
 # -------------------------------------------------
 # Anexo da LRF receita corrente liquida
