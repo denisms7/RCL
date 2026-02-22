@@ -76,6 +76,7 @@ with col2:
         value=3
     )
 
+anos_previsao = anos_previsao + 1
 
 # ==================================================
 # PREPARAÇÃO DOS DADOS
@@ -249,6 +250,8 @@ st.subheader("📈 Série Temporal e Previsão")
 
 fig = go.Figure()
 
+data_graf = forecast[forecast["ds"] > df_modelo["ds"].max()].copy()
+
 # Dados reais (azul - toda a série histórica)
 fig.add_trace(
     go.Scatter(
@@ -261,11 +264,13 @@ fig.add_trace(
     )
 )
 
+
+
 # Previsão (vermelha tracejada)
 fig.add_trace(
     go.Scatter(
-        x=forecast["ds"],
-        y=forecast["yhat"],
+        x=data_graf["ds"],
+        y=data_graf["yhat"],
         name="Previsão",
         mode="lines",
         line=dict(color="red", width=2.5, dash="dash"),
@@ -276,8 +281,8 @@ fig.add_trace(
 # Intervalo de confiança superior (linha pontilhada)
 fig.add_trace(
     go.Scatter(
-        x=forecast["ds"],
-        y=forecast["yhat_upper"],
+        x=data_graf["ds"],
+        y=data_graf["yhat_upper"],
         mode="lines",
         line=dict(color="rgba(255, 0, 0, 0.3)", width=1, dash="dot"),
         name="Limite Superior (95%)",
@@ -288,8 +293,8 @@ fig.add_trace(
 # Intervalo de confiança inferior (linha pontilhada)
 fig.add_trace(
     go.Scatter(
-        x=forecast["ds"],
-        y=forecast["yhat_lower"],
+        x=data_graf["ds"],
+        y=data_graf["yhat_lower"],
         mode="lines",
         line=dict(color="rgba(255, 0, 0, 0.3)", width=1, dash="dot"),
         name="Limite Inferior (95%)",
@@ -300,8 +305,8 @@ fig.add_trace(
 # Área preenchida entre os limites (área sombreada)
 fig.add_trace(
     go.Scatter(
-        x=forecast["ds"],
-        y=forecast["yhat_upper"],
+        x=data_graf["ds"],
+        y=data_graf["yhat_upper"],
         mode="lines",
         line=dict(width=0),
         showlegend=False,
@@ -311,8 +316,8 @@ fig.add_trace(
 
 fig.add_trace(
     go.Scatter(
-        x=forecast["ds"],
-        y=forecast["yhat_lower"],
+        x=data_graf["ds"],
+        y=data_graf["yhat_lower"],
         fill="tonexty",
         mode="lines",
         line=dict(width=0),
