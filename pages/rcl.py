@@ -62,31 +62,31 @@ with col1:
     st.metric(
         label="Receita Negativa",
         value=len(df_negativo),
-        help=f"Quantidade de entradas com valor negativo: {ano_min} a {ano_max}"
+        help=f"Quantidade de entradas com valor negativo: {ano_inicio} a {ano_fim}"
     )
 with col2:
     st.metric(
         label="Menor Entrada",
         value=f"R$ {df_min:,.2f}",
-        help=f"Menor valor registrado, desconsiderando zeros: {ano_min} a {ano_max}"
+        help=f"Menor valor registrado, desconsiderando zeros: {ano_inicio} a {ano_fim}"
     )
 with col3:
     st.metric(
         label="Maior Entrada",
         value=f"R$ {df_max:,.2f}",
-        help=f"Maior valor registrado, desconsiderando zeros: {ano_min} a {ano_max}"
+        help=f"Maior valor registrado, desconsiderando zeros: {ano_inicio} a {ano_fim}"
     )
 with col4:
     st.metric(
         label="Média",
         value=f"R$ {df_mean:,.2f}",
-        help=f"Média dos valores, desconsiderando zeros: {ano_min} a {ano_max}"
+        help=f"Média dos valores, desconsiderando zeros: {ano_inicio} a {ano_fim}"
     )
 with col5:
     st.metric(
         label="Mediana",
         value=f"R$ {df_median:,.2f}",
-        help=f"Mediana dos valores, desconsiderando zeros: {ano_min} a {ano_max}"
+        help=f"Mediana dos valores, desconsiderando zeros: {ano_inicio} a {ano_fim}"
     )
 
 
@@ -254,7 +254,7 @@ rcl_acumulado = (
 )
 
 st.metric(
-    label=f"Acumulado de {ano_min} a {ano_max}",
+    label=f"Acumulado de {ano_inicio} a {ano_fim}",
     value=f"R$ {rcl_acumulado:,.2f}",
     help=f"{anexo_rcl}"
 )
