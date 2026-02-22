@@ -90,6 +90,9 @@ with col5:
     )
 
 
+
+
+
 if len(df_negativo) > 0:
     with st.expander("📉 Valores de entrada negativos"):
         df_neg = df[df["VALOR"] < 0].copy()
@@ -241,6 +244,20 @@ elif anexo_rcl_tipo == "Tabela de Dados":
 
 else:
     st.warning("Selecione um tipo de visualização válido.")
+
+
+# -------------------------------------------------
+# ACUMULADO
+# -------------------------------------------------
+rcl_acumulado = (
+    df.loc[df['ESPECIFICACAO'] == anexo_rcl, 'VALOR'].sum()
+)
+
+st.metric(
+    label=f"Acumulado de {ano_min} a {ano_max}",
+    value=f"R$ {rcl_acumulado:,.2f}",
+    help=f"{anexo_rcl}"
+)
 
 
 # -------------------------------------------------
