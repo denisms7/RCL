@@ -367,11 +367,12 @@ st.subheader("🥧 Representação na Receita")
 ano_min = int(df["ANO"].min())
 ano_max = int(df["ANO"].max())
 
-ano_selecionado = st.slider(
+anos_disponiveis = sorted(range(ano_min, ano_max + 1), reverse=True)
+
+ano_selecionado = st.selectbox(
     "Selecione o ano",
-    min_value=ano_min,
-    max_value=ano_max,
-    value=ano_max,
+    options=anos_disponiveis,
+    # index=len(anos_disponiveis) - 1
 )
 
 df_pizza_tributos = (
@@ -462,7 +463,7 @@ fig_rcl_vs_tributos = px.pie(
     df_proporcao,
     names="Categoria",
     values="Valor",
-    title=f"rcl: Tributos vs Outras Receitas - {ano_selecionado}",
+    title=f"RCL: Tributos vs Outras Receitas - {ano_selecionado}",
     color_discrete_sequence=px.colors.qualitative.Set2
 )
 fig_rcl_vs_tributos.update_traces(
@@ -492,7 +493,7 @@ fig_composicao = px.pie(
     df_composicao,
     names="ESPECIFICACAO",
     values="VALOR",
-    title=f"Composição Líquida da rcl - {ano_selecionado}",
+    title=f"Composição Líquida da RCL - {ano_selecionado}",
     color_discrete_sequence=px.colors.qualitative.Pastel
 )
 fig_composicao.update_traces(
