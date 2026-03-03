@@ -9,7 +9,7 @@ pages = {
         st.Page("pages/Previsao_Receitas.py", title="Previsão de Receitas"),
         st.Page("pages/Fontes_de_Dados_rcl.py", title="Fontes de Dados"),
     ],
-    "➡️ Outros": [
+    "➡️ Folha de Pagamento": [
         st.Page("pages/Folha.py", title="Folha de Pagamento"),
         st.Page("pages/Fontes_de_Dados_Folha.py", title="Fontes de Dados"),
     ],
