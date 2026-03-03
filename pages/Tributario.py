@@ -216,6 +216,14 @@ with col2:
     st.plotly_chart(fig_total, width='stretch')
 
 
+
+
+
+
+
+
+
+
 # ==================================================
 # Evolução Individual
 # ==================================================
@@ -226,8 +234,12 @@ col_a, col_b = st.columns(2)
 with col_a:
     tipo_visualizacao_ind = st.segmented_control(
         "Tipo de Visualização",
-        options=["Mensal", "Anual"],
-        default="Mensal",
+        options=[
+            "Gráfico Mensal",
+            "Gráfico Anual",
+            "Tabela de Dados",
+        ],
+        default="Gráfico Mensal",
         key="vis_individual",
     )
 
@@ -238,64 +250,114 @@ with col_b:
         key="tributo_individual",
     )
 
-
+# -------------------------------------------------
+# Filtro base
+# -------------------------------------------------
 df_individual = df_tributos[
     df_tributos["ESPECIFICACAO"] == tributo_selecionado
 ].copy()
 
 
-if tipo_visualizacao_ind == "Anual":
+# ==================================================
+# TABELA
+# ==================================================
+if tipo_visualizacao_ind == None:
+    st.warning("Selecione um tipo de visualização válido.")
+    st.stop()
 
-    df_individual = (
-        agrupar_valor(df_individual, ["ANO"])
-        .sort_values("ANO")
+if tipo_visualizacao_ind == "Tabela de Dados":
+
+    df_individual = df_individual.sort_values(["ANO", "MES_ANO"])
+    st.dataframe(df_individual)
+    csv = df_individual.to_csv(
+        sep=';',
+        index=False,
+        decimal=',',
+        encoding='utf-8-sig'
     )
 
-    coluna_periodo_ind = "ANO"
+    st.download_button(
+        label="📥 Baixar dados em CSV",
+        data=csv,
+        file_name=f"dados_{tributo_selecionado}.csv",
+        mime="text/csv",
+    )
 
+
+# ==================================================
+# GRÁFICOS
+# ==================================================
 else:
-    ano_min = int(df_individual["ANO"].min())
-    ano_max = int(df_individual["ANO"].max())
 
-    ano_individual = st.slider(
-        "Selecione o intervalo de anos",
-        min_value=ano_min,
-        max_value=ano_max,
-        value=(ano_min, ano_max),
-        step=1,
+    # -------------------------
+    # ANUAL
+    # -------------------------
+    if tipo_visualizacao_ind == "Gráfico Anual":
+
+        df_individual = (
+            agrupar_valor(df_individual, ["ANO"])
+            .sort_values("ANO")
+        )
+
+        coluna_periodo_ind = "ANO"
+
+    # -------------------------
+    # MENSAL
+    # -------------------------
+    elif tipo_visualizacao_ind == "Gráfico Mensal":
+
+        ano_min = int(df_individual["ANO"].min())
+        ano_max = int(df_individual["ANO"].max())
+
+        ano_individual = st.slider(
+            "Selecione o intervalo de anos",
+            min_value=ano_min,
+            max_value=ano_max,
+            value=(ano_min, ano_max),
+            step=1,
+        )
+
+        df_individual = (
+            df_individual[
+                (df_individual["ANO"] >= ano_individual[0]) &
+                (df_individual["ANO"] <= ano_individual[1])
+            ]
+            .sort_values("MES_ANO")
+        )
+
+        coluna_periodo_ind = "MES_ANO"
+
+    # -------------------------
+    # Criação do gráfico
+    # -------------------------
+    fig_individual = px.line(
+        df_individual,
+        x=coluna_periodo_ind,
+        y="VALOR",
+        markers=True,
     )
 
-    df_individual = (
-        df_individual[
-            (df_individual["ANO"] >= ano_individual[0]) & (df_individual["ANO"] <= ano_individual[1])
-        ]
-        .sort_values("MES_ANO")
+    fig_individual = formatar_layout_monetario(
+        fig_individual,
+        tributo_selecionado,
     )
 
-    coluna_periodo_ind = "MES_ANO"
-
-
-fig_individual = px.line(
-    df_individual,
-    x=coluna_periodo_ind,
-    y="VALOR",
-    markers=True,
-)
-
-fig_individual = formatar_layout_monetario(
-    fig_individual,
-    tributo_selecionado,
-)
-
-fig_individual.update_traces(
-    hovertemplate=(
-        f"Data: %{{x}}<br>"
-        "Valor: R$ %{y:,.2f}"
-        "<extra></extra>"
+    fig_individual.update_traces(
+        hovertemplate=(
+            "Data: %{x}<br>"
+            "Valor: R$ %{y:,.2f}"
+            "<extra></extra>"
+        )
     )
-)
 
-st.plotly_chart(fig_individual, width='stretch')
+    st.plotly_chart(fig_individual, width="stretch")
+
+
+
+
+
+
+
 
 # ==================================================
 # Representações Percentuais
