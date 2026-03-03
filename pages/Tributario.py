@@ -122,24 +122,24 @@ st.subheader("📊 Tributação Geral")
 
 tipo_visualizacao_geral = st.segmented_control(
     "Tipo de Visualização",
-    options=["Mensal", "Anual"],
-    default="Mensal",
+    options=["Gráfico Mensal", "Gráfico Anual"],
+    default="Gráfico Mensal",
     key="vis_geral",
 )
 
 coluna_periodo_geral = (
     "MES_ANO"
-    if tipo_visualizacao_geral == "Mensal"
+    if tipo_visualizacao_geral == "Gráfico Mensal"
     else "ANO"
 )
 
-if tipo_visualizacao_geral == "Mensal":
+if tipo_visualizacao_geral == "Gráfico Mensal":
     df_geral = agrupar_valor(
         df_tributos,
         ["MES_ANO", "ESPECIFICACAO"],
     )
 
-elif tipo_visualizacao_geral == "Anual":
+elif tipo_visualizacao_geral == "Gráfico Anual":
     df_geral = (
         agrupar_valor(
             df_tributos,
