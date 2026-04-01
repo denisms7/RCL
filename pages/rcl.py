@@ -11,7 +11,6 @@ MESES = {
 }
 
 
-
 # -------------------------------------------------
 # Configuração da página
 # -------------------------------------------------
@@ -32,7 +31,7 @@ with st.spinner("Carregando dados..."):
 
 
 # -------------------------------------------------
-# Filtrar período 💰
+# Filtrar período
 # -------------------------------------------------
 st.sidebar.subheader("🎯 Filtros", divider=True)
 
@@ -49,18 +48,15 @@ ano_inicio, ano_fim = st.sidebar.slider(
 
 df = df.loc[
     (df["ANO"] >= ano_inicio) & (df["ANO"] <= ano_fim)
-].copy()  # Adicione .copy() aqui
-
+].copy()
 
 
 # -------------------------------------------------
-# Descritical de receitas e despesas 💰
+# Descritivas de receitas e despesas
 # -------------------------------------------------
-
 valores_validos = df[df["VALOR"] != 0]["VALOR"]
 df_negativo = df[df["VALOR"] < 0]
 
-# Calcula métricas
 df_min = valores_validos.min()
 df_max = valores_validos.max()
 df_mean = valores_validos.mean()
@@ -100,17 +96,11 @@ with col5:
     )
 
 
-
-
-
 if len(df_negativo) > 0:
     with st.expander("📉 Valores de entrada negativos"):
         df_neg = df[df["VALOR"] < 0].copy()
-
-        # Seleciona apenas as colunas relevantes
         df_neg = df_neg[["ANO", "MES_ANO", "ESPECIFICACAO", "VALOR"]]
 
-        # Calcula o total
         df_neg_total = df_neg["VALOR"].sum() * -1
         df_neg_min = df_neg["VALOR"].min() * -1
         df_neg_max = df_neg["VALOR"].max() * -1
@@ -120,30 +110,18 @@ if len(df_negativo) > 0:
 
         cola, colb, colc = st.columns(3)
 
-        # Mostra metricas formatado
         with cola:
-            st.metric(
-                label="Total de Valores Negativos",
-                value=f"R$ {df_neg_total:,.2f}"
-            )
-
+            st.metric(label="Total de Valores Negativos", value=f"R$ {df_neg_total:,.2f}")
         with colb:
-            st.metric(
-                label="Maior Negativo",
-                value=f"R$ {df_neg_min:,.2f}"
-            )
-
+            st.metric(label="Maior Negativo", value=f"R$ {df_neg_min:,.2f}")
         with colc:
-            st.metric(
-                label="Menor Negativo",
-                value=f"R$ {df_neg_max:,.2f}"
-            )
+            st.metric(label="Menor Negativo", value=f"R$ {df_neg_max:,.2f}")
 
-        # Mostra tabela
         st.dataframe(df_neg)
 
+
 # -------------------------------------------------
-# Anexo da LRF receita corrente liquida
+# Anexo da LRF receita corrente líquida
 # -------------------------------------------------
 st.subheader("📊 Receita Corrente Geral")
 
@@ -161,15 +139,6 @@ if anexo_rcl is None:
     st.warning("Selecione um tipo de receita válido.")
     st.stop()
 
-
-# Dicionário de cores
-cores_plotly = {
-    "RECEITA CORRENTE LÍQUIDA (III) = (I - II)": "seagreen",
-    "RECEITAS CORRENTES (I)": "navy",
-    "DEDUÇÕES (II)": "red"
-}
-
-
 anexo_rcl_tipo = st.segmented_control(
     "Tipo de Visualização",
     options=[
@@ -180,76 +149,51 @@ anexo_rcl_tipo = st.segmented_control(
     default="Gráfico Mensal",
 )
 
-rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl]
+rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl].copy()  # FIX: .copy() para evitar SettingWithCopyWarning
 
 if anexo_rcl_tipo == "Gráfico Mensal":
-    anexo_rcl_tipo_coluna = "MES_ANO"
     rcl_geral = rcl_geral.sort_values(by="MES_ANO")
 
     fig_rcl = px.line(
         rcl_geral,
-        x=anexo_rcl_tipo_coluna,
+        x="MES_ANO",
         y="VALOR",
         markers=True,
-        labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
+        labels={"MES_ANO": "Mês/Ano", "VALOR": "Valor"}
     )
-
     fig_rcl.update_layout(
         title=f"{anexo_rcl}",
-        xaxis_title=anexo_rcl_tipo,
+        xaxis_title="Mês/Ano",
         yaxis_title="Valor (R$)",
-        yaxis=dict(
-            tickformat=",.2f",
-            tickprefix="R$ ",
-            separatethousands=True
-        )
+        yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
     )
-
     fig_rcl.update_traces(
-        hovertemplate=(
-            f"{anexo_rcl_tipo}: %{{x}}<br>"
-            "Valor: R$ %{y:,.2f}"
-            "<extra></extra>"
-        )
+        hovertemplate="Mês/Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
     )
-
-    st.plotly_chart(fig_rcl, width='stretch')
+    st.plotly_chart(fig_rcl, use_container_width=True)  # FIX: width='stretch' não é parâmetro válido
 
 elif anexo_rcl_tipo == "Gráfico Anual":
-    anexo_rcl_tipo_coluna = "ANO"
-    rcl_geral = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
-    rcl_geral = rcl_geral.sort_values(by="ANO")
+    rcl_geral_anual = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
+    rcl_geral_anual = rcl_geral_anual.sort_values(by="ANO")
 
     fig_rcl = px.bar(
-        rcl_geral,
-        x=anexo_rcl_tipo_coluna,
+        rcl_geral_anual,
+        x="ANO",
         y="VALOR",
-        labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
+        labels={"ANO": "Ano", "VALOR": "Valor"}
     )
-
     fig_rcl.update_layout(
         title=f"{anexo_rcl}",
-        xaxis_title=anexo_rcl_tipo,
+        xaxis_title="Ano",
         yaxis_title="Valor (R$)",
-        yaxis=dict(
-            tickformat=",.2f",
-            tickprefix="R$ ",
-            separatethousands=True
-        )
+        yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
     )
-
     fig_rcl.update_traces(
-        hovertemplate=(
-            f"{anexo_rcl_tipo}: %{{x}}<br>"
-            "Valor: R$ %{y:,.2f}"
-            "<extra></extra>"
-        )
+        hovertemplate="Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
     )
-
-    st.plotly_chart(fig_rcl, width='stretch')
+    st.plotly_chart(fig_rcl, use_container_width=True)  # FIX: width='stretch' não é parâmetro válido
 
 elif anexo_rcl_tipo == "Tabela de Dados":
-
     st.dataframe(rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]])
 
 else:
@@ -259,9 +203,7 @@ else:
 # -------------------------------------------------
 # ACUMULADO
 # -------------------------------------------------
-rcl_acumulado = (
-    df.loc[df['ESPECIFICACAO'] == anexo_rcl, 'VALOR'].sum()
-)
+rcl_acumulado = df.loc[df['ESPECIFICACAO'] == anexo_rcl, 'VALOR'].sum()
 
 st.metric(
     label=f"Acumulado de {ano_inicio} a {ano_fim}",
@@ -271,7 +213,7 @@ st.metric(
 
 
 # -------------------------------------------------
-# INFORMACAO
+# INFORMAÇÃO
 # -------------------------------------------------
 if anexo_rcl == "RECEITA CORRENTE LÍQUIDA (III) = (I - II)":
     st.markdown(
@@ -287,47 +229,39 @@ elif anexo_rcl == "DEDUÇÕES (II)":
     )
 
 
+# -------------------------------------------------
+# COMPARATIVO MENSAL
+# -------------------------------------------------
 st.title("📅 Comparativo Mensal")
 
-# Criar coluna de mês (numérico)
+# FIX: Criar coluna MES a partir de rcl_geral (já filtrado por especificação)
 rcl_geral["MES"] = rcl_geral["MES_ANO"].dt.month
 
-# Selectbox
 mes_selecionado = st.selectbox(
     "Selecione o mês:",
     options=list(MESES.keys()),
     format_func=lambda x: MESES[x]
 )
 
+nome_mes = MESES[mes_selecionado]
 
+# FIX: Comparativo mensal sempre usa ANO no eixo X (comparação entre anos para o mesmo mês)
 df_mes = rcl_geral[rcl_geral["MES"] == mes_selecionado].sort_values(by="MES_ANO")
 
 fig_mes = px.bar(
     df_mes,
-    x=anexo_rcl_tipo_coluna,
+    x="ANO",  # FIX: sempre ANO no comparativo mensal, independente do modo de visualização
     y="VALOR",
-    labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
+    labels={"ANO": f"{nome_mes} ao longo dos anos", "VALOR": "Valor"}
 )
-
-nome_mes = MESES[mes_selecionado]
-
 fig_mes.update_layout(
     title=f"{nome_mes.upper()} - {anexo_rcl}",
-    xaxis_title=anexo_rcl_tipo,
+    xaxis_title="Ano",
     yaxis_title="Valor (R$)",
-    yaxis=dict(
-        tickformat=",.2f",
-        tickprefix="R$ ",
-        separatethousands=True
-    )
+    yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
 )
-
 fig_mes.update_traces(
-    hovertemplate=(
-        f"{anexo_rcl_tipo}: %{{x}}<br>"
-        "Valor: R$ %{y:,.2f}"
-        "<extra></extra>"
-    )
+    hovertemplate="Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
 )
 
-st.plotly_chart(fig_mes, width='stretch')
+st.plotly_chart(fig_mes, use_container_width=True)  # FIX: width='stretch' não é parâmetro válido
