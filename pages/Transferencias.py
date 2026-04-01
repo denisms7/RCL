@@ -24,6 +24,28 @@ with st.spinner("Carregando dados..."):
     df = load_data_rcl()
 
 
+# -------------------------------------------------
+# Filtrar período
+# -------------------------------------------------
+st.sidebar.subheader("🎯 Filtros", divider=True)
+
+ano_min = int(df["ANO"].min())
+ano_max = int(df["ANO"].max())
+
+ano_inicio, ano_fim = st.sidebar.slider(
+    "Selecione o intervalo de anos",
+    min_value=ano_min,
+    max_value=ano_max,
+    value=(ano_min, ano_max),
+    step=1,
+)
+
+df = df.loc[
+    (df["ANO"] >= ano_inicio) & (df["ANO"] <= ano_fim)
+].copy()
+
+
+
 TIPOS_TRIBUTARIOS = [
     "Cota parte do FPM",
     "Cota parte do ICMS",
