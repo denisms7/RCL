@@ -248,14 +248,18 @@ nome_mes = MESES[mes_selecionado]
 # FIX: Comparativo mensal sempre usa ANO no eixo X (comparação entre anos para o mesmo mês)
 df_mes = rcl_geral[rcl_geral["MES"] == mes_selecionado].sort_values(by="MES_ANO")
 
+mes_min = df_mes["ANO"].min()
+mes_max = df_mes["ANO"].max()
+
 fig_mes = px.bar(
     df_mes,
-    x="ANO",  # FIX: sempre ANO no comparativo mensal, independente do modo de visualização
+    x="ANO",
     y="VALOR",
     labels={"ANO": f"{nome_mes} ao longo dos anos", "VALOR": "Valor"}
 )
+
 fig_mes.update_layout(
-    title=f"{nome_mes.upper()} - {anexo_rcl}",
+    title=f"{mes_min} a {mes_max} | {nome_mes.upper()} | {anexo_rcl}",
     xaxis_title="Ano",
     yaxis_title="Valor (R$)",
     yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
