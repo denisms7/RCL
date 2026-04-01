@@ -170,7 +170,7 @@ if anexo_rcl_tipo == "Gráfico Mensal":
     fig_rcl.update_traces(
         hovertemplate="Mês/Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
     )
-    st.plotly_chart(fig_rcl, use_container_width=True)  # FIX: width='stretch' não é parâmetro válido
+    st.plotly_chart(fig_rcl, width='stretch')  # FIX: width='stretch' não é parâmetro válido
 
 elif anexo_rcl_tipo == "Gráfico Anual":
     rcl_geral_anual = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
@@ -191,7 +191,7 @@ elif anexo_rcl_tipo == "Gráfico Anual":
     fig_rcl.update_traces(
         hovertemplate="Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
     )
-    st.plotly_chart(fig_rcl, use_container_width=True)  # FIX: width='stretch' não é parâmetro válido
+    st.plotly_chart(fig_rcl, width='stretch')  # FIX: width='stretch' não é parâmetro válido
 
 elif anexo_rcl_tipo == "Tabela de Dados":
     st.dataframe(rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]])
@@ -268,4 +268,4 @@ fig_mes.update_traces(
     hovertemplate="Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
 )
 
-st.plotly_chart(fig_mes, use_container_width=True)  # FIX: width='stretch' não é parâmetro válido
+st.plotly_chart(fig_mes, width='stretch')  # FIX: width='stretch' não é parâmetro válido
