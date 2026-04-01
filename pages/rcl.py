@@ -3,6 +3,15 @@ import plotly.express as px
 from data.rcl.data import load_data_rcl
 
 
+# Dicionário de meses
+MESES = {
+    1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril",
+    5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto",
+    9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro",
+}
+
+
+
 # -------------------------------------------------
 # Configuração da página
 # -------------------------------------------------
@@ -41,6 +50,7 @@ ano_inicio, ano_fim = st.sidebar.slider(
 df = df.loc[
     (df["ANO"] >= ano_inicio) & (df["ANO"] <= ano_fim)
 ].copy()  # Adicione .copy() aqui
+
 
 
 # -------------------------------------------------
@@ -275,3 +285,49 @@ elif anexo_rcl == "DEDUÇÕES (II)":
     st.markdown(
         "As **Deduções (II)** referem-se às despesas obrigatórias que devem ser subtraídas das receitas correntes para calcular a Receita Corrente Líquida (RCL). Essas deduções incluem transferências constitucionais, como o Fundo de Participação dos Municípios (FPM), e outras despesas legais que reduzem a receita disponível para o município. As deduções são um componente crucial para entender a real capacidade financeira do município e para garantir que os limites de gastos públicos sejam respeitados."
     )
+
+
+st.title("📅 Comparativo Mensal")
+
+# Criar coluna de mês (numérico)
+rcl_geral["MES"] = rcl_geral["MES_ANO"].dt.month
+
+# Selectbox
+mes_selecionado = st.selectbox(
+    "Selecione o mês:",
+    options=list(MESES.keys()),
+    format_func=lambda x: MESES[x]
+)
+
+
+df_mes = rcl_geral[rcl_geral["MES"] == mes_selecionado].sort_values(by="MES_ANO")
+
+fig_mes = px.bar(
+    df_mes,
+    x=anexo_rcl_tipo_coluna,
+    y="VALOR",
+    labels={anexo_rcl_tipo_coluna: anexo_rcl_tipo, "VALOR": "Valor"}
+)
+
+nome_mes = MESES[mes_selecionado]
+
+fig_mes.update_layout(
+    title=f"{nome_mes.upper()} - {anexo_rcl}",
+    xaxis_title=anexo_rcl_tipo,
+    yaxis_title="Valor (R$)",
+    yaxis=dict(
+        tickformat=",.2f",
+        tickprefix="R$ ",
+        separatethousands=True
+    )
+)
+
+fig_mes.update_traces(
+    hovertemplate=(
+        f"{anexo_rcl_tipo}: %{{x}}<br>"
+        "Valor: R$ %{y:,.2f}"
+        "<extra></extra>"
+    )
+)
+
+st.plotly_chart(fig_mes, width='stretch')
