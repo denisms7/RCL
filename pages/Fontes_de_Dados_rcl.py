@@ -53,7 +53,7 @@ def mostrar_pdf(pdf_path, nome):
         data=pdf_bytes,
         file_name=nome,
         mime="application/pdf",
-        use_container_width=True
+        width='stretch'
     )
 
 
@@ -69,7 +69,7 @@ if pdf_files:
         nome_arquivo = pdf.stem  # ex: 2013
 
         # Botão para abrir o modal
-        if col.button(f"📄 {nome_arquivo}", key=f"btn_{i}", use_container_width=True):
+        if col.button(f"📄 {nome_arquivo}", key=f"btn_{i}", width='stretch'):
             mostrar_pdf(pdf, f"{nome_arquivo}.pdf")
 
 else:

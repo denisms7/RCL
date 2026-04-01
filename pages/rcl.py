@@ -173,16 +173,16 @@ cores_plotly = {
 anexo_rcl_tipo = st.segmented_control(
     "Tipo de Visualização",
     options=[
-        "Grafico Mensal",
-        "Grafico Anual",
+        "Gráfico Mensal",
+        "Gráfico Anual",
         "Tabela de Dados",
     ],
-    default="Grafico Mensal",
+    default="Gráfico Mensal",
 )
 
 rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl]
 
-if anexo_rcl_tipo == "Grafico Mensal":
+if anexo_rcl_tipo == "Gráfico Mensal":
     anexo_rcl_tipo_coluna = "MES_ANO"
     rcl_geral = rcl_geral.sort_values(by="MES_ANO")
 
@@ -215,7 +215,7 @@ if anexo_rcl_tipo == "Grafico Mensal":
 
     st.plotly_chart(fig_rcl, width='stretch')
 
-elif anexo_rcl_tipo == "Grafico Anual":
+elif anexo_rcl_tipo == "Gráfico Anual":
     anexo_rcl_tipo_coluna = "ANO"
     rcl_geral = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
     rcl_geral = rcl_geral.sort_values(by="ANO")

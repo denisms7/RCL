@@ -22,7 +22,7 @@ with st.spinner("Carregando dados..."):
 # -------------------------------------------------
 st.link_button(
     "🔗 Portal da Transparência",
-    "https://centenariodosulpr.equiplano.com.br:7508/transparencia/srhRelacaoDeServidoresSalariosDetalhado/listEntidades"
+    "https://centenariodosulpr.equiplano.com.br:7508/transparencia/srhRelacaoDeServidoresSalariosDetalhado"
 )
 
 

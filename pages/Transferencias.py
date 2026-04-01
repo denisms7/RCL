@@ -47,9 +47,9 @@ df_transferencias = df[df["ESPECIFICACAO"].isin(TIPOS_TRIBUTARIOS)].copy()
 # Controle de Visualização
 # ==================================================
 tipo_visualizacao_geral = st.segmented_control(
-    "Tipo de Visualização",
-    options=["Mensal", "Anual"],
-    default="Mensal",
+    "Tipo de Visualização:",
+    options=["Gráfico Mensal", "Gráfico Anual"],
+    default="Gráfico Mensal",
     key="vis_geral",
 )
 
@@ -57,7 +57,7 @@ tipo_visualizacao_geral = st.segmented_control(
 # ==================================================
 # Agrupamento Dinâmico
 # ==================================================
-if tipo_visualizacao_geral == "Mensal":
+if tipo_visualizacao_geral == "Gráfico Mensal":
     eixo_x = "MES_ANO"
     x_title = "Mês/Ano"
 
@@ -133,7 +133,7 @@ if tipo_visualizacao_geral == "Mensal":
     with col_b:
         st.plotly_chart(fig_total_linha, width='stretch')
 
-elif tipo_visualizacao_geral == "Anual":
+elif tipo_visualizacao_geral == "Gráfico Anual":
     eixo_x = "ANO"
     x_title = "Ano"
 
@@ -217,12 +217,11 @@ else:
 # Gráfico Pizza
 # ==================================================
 
-ano_individual = st.slider(
-    "Selecione o ano",
-    min_value=ano_min,
-    max_value=ano_max,
-    value=ano_max,
-    step=1,
+anos_disponiveis = sorted(range(ano_min, ano_max + 1), reverse=True)
+
+ano_individual = st.selectbox(
+    "Selecione o ano:",
+    options=anos_disponiveis,
 )
 
 df_filtrado = df_transferencias[
