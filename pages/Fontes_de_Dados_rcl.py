@@ -2,6 +2,7 @@
 import streamlit as st
 from pathlib import Path
 from data.rcl.data import load_data_rcl, RENOMEANDO_COLUNAS
+from data.data_modification import modification_date
 
 
 # ==================================================
@@ -28,6 +29,7 @@ st.link_button(
     "🔗 Portal da Transparência",
     "https://centenariodosulpr.equiplano.com.br:7508/transparencia/receitaCorrenteLiquida"
 )
+
 
 
 # ==================================================
@@ -75,6 +77,24 @@ if pdf_files:
 else:
     st.info("Nenhum PDF encontrado na pasta rcl-pdf.")
 
+# ==================================================
+# Ultima Atualização
+# ==================================================
+try:
+    resultado = modification_date(r'data/rcl/rcl-pdf')
+    
+    if resultado:
+        nome, data = resultado
+        
+        with st.expander("📅 Ultima Atualização PDF"):
+            st.write(f"**Arquivo Recente:** {nome}")
+            st.write(f"**Última Modificação:** {data.strftime('%d/%m/%Y %H:%M:%S')}")
+    else:
+        st.warning("Nenhum arquivo encontrado na pasta.")
+
+except Exception as e:
+    st.error(f"Erro: {e}")
+
 st.subheader("ℹ️ Observações sobre dados renomeados")
 
 st.markdown(
@@ -96,3 +116,21 @@ st.download_button(
     file_name="RCL_Dados.csv",
     mime="text/csv"
 )
+
+# ==================================================
+# Ultima Atualização
+# ==================================================
+try:
+    resultado = modification_date(r'data/rcl/rcl-data')
+    
+    if resultado:
+        nome, data = resultado
+        
+        with st.expander("📅 Ultima Atualização CSV"):
+            st.write(f"**Arquivo Recente:** {nome}")
+            st.write(f"**Última Modificação:** {data.strftime('%d/%m/%Y %H:%M:%S')}")
+    else:
+        st.warning("Nenhum arquivo encontrado na pasta.")
+
+except Exception as e:
+    st.error(f"Erro: {e}")

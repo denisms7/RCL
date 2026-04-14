@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.express as px
 from data.rcl.data import load_data_rcl
+from data.data_modification import modification_date
 
 
 # Dicionário de meses
@@ -30,6 +31,25 @@ with st.spinner("Carregando dados..."):
     df = load_data_rcl()
 
 
+# ==================================================
+# Ultima Atualização
+# ==================================================
+try:
+    resultado = modification_date(r'data/rcl/rcl-data')
+    
+    if resultado:
+        nome, data = resultado
+        
+        with st.expander("📅 Ultima Atualização"):
+            st.write(f"**Arquivo Recente:** {nome}")
+            st.write(f"**Última Modificação:** {data.strftime('%d/%m/%Y %H:%M:%S')}")
+    else:
+        st.warning("Nenhum arquivo encontrado na pasta.")
+
+except Exception as e:
+    st.error(f"Erro: {e}")
+
+
 # -------------------------------------------------
 # Filtrar período
 # -------------------------------------------------
@@ -54,6 +74,7 @@ df = df.loc[
 # -------------------------------------------------
 # Descritivas de receitas e despesas
 # -------------------------------------------------
+# st.subheader("📃 Descritivas de Receitas")
 valores_validos = df[df["VALOR"] != 0]["VALOR"]
 df_negativo = df[df["VALOR"] < 0]
 
