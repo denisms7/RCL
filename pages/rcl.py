@@ -292,7 +292,9 @@ fig_mes = px.bar(
 )
 
 fig_mes.update_layout(
-    title=f"{anexo_rcl} | {mes_min}-{mes_max} | {label_meses.upper()}",
+    title=dict(
+        text=f"{anexo_rcl} | {mes_min}-{mes_max}<br><sup>{label_meses.upper()}</sup>",
+    ),
     xaxis_title="Ano",
     yaxis_title="Valor (R$)",
     yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
