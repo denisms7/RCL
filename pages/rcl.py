@@ -255,19 +255,31 @@ elif anexo_rcl == "DEDUÇÕES (II)":
 # -------------------------------------------------
 st.title("📅 Comparativo Mensal")
 
-# FIX: Criar coluna MES a partir de rcl_geral (já filtrado por especificação)
 rcl_geral["MES"] = rcl_geral["MES_ANO"].dt.month
 
-mes_selecionado = st.selectbox(
-    "Selecione o mês:",
+# Seleção de múltiplos meses
+meses_selecionados = st.multiselect(
+    "Selecione o(s) mês(es):",
+    placeholder="Selecione um ou mais meses...",
     options=list(MESES.keys()),
+    default=[1],
     format_func=lambda x: MESES[x]
 )
 
-nome_mes = MESES[mes_selecionado]
+if not meses_selecionados:
+    st.warning("Selecione pelo menos um mês.")
+    st.stop()
 
-# FIX: Comparativo mensal sempre usa ANO no eixo X (comparação entre anos para o mesmo mês)
-df_mes = rcl_geral[rcl_geral["MES"] == mes_selecionado].sort_values(by="MES_ANO")
+nomes_meses = [MESES[m] for m in sorted(meses_selecionados)]
+label_meses = " + ".join(nomes_meses)
+
+# Filtra os meses selecionados e agrupa por ano (soma)
+df_mes = (
+    rcl_geral[rcl_geral["MES"].isin(meses_selecionados)]
+    .groupby("ANO", as_index=False)["VALOR"]
+    .sum()
+    .sort_values("ANO")
+)
 
 mes_min = df_mes["ANO"].min()
 mes_max = df_mes["ANO"].max()
@@ -276,11 +288,11 @@ fig_mes = px.bar(
     df_mes,
     x="ANO",
     y="VALOR",
-    labels={"ANO": f"{nome_mes} ao longo dos anos", "VALOR": "Valor"}
+    labels={"ANO": f"{label_meses} ao longo dos anos", "VALOR": "Valor"}
 )
 
 fig_mes.update_layout(
-    title=f"{mes_min} a {mes_max} | {nome_mes.upper()} | {anexo_rcl}",
+    title=f"{anexo_rcl} | {mes_min}-{mes_max} | {label_meses.upper()}",
     xaxis_title="Ano",
     yaxis_title="Valor (R$)",
     yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
@@ -289,4 +301,4 @@ fig_mes.update_traces(
     hovertemplate="Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
 )
 
-st.plotly_chart(fig_mes, width='stretch')  # FIX: width='stretch' não é parâmetro válido
+st.plotly_chart(fig_mes, width='stretch')
