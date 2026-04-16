@@ -138,7 +138,7 @@ if len(df_negativo) > 0:
         with colc:
             st.metric(label="Menor Negativo", value=f"R$ {df_neg_max:,.2f}")
 
-        st.dataframe(df_neg)
+        st.dataframe(df_neg, hide_index=True)
 
 
 # -------------------------------------------------
@@ -219,7 +219,7 @@ elif anexo_rcl_tipo == "Gráfico Anual":
     st.plotly_chart(fig_rcl, width='stretch')  # FIX: width='stretch' não é parâmetro válido
 
 elif anexo_rcl_tipo == "Tabela de Dados":
-    st.dataframe(rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]])
+    st.dataframe(rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]], hide_index=True)
 
 else:
     st.warning("Selecione um tipo de visualização válido.")
