@@ -268,7 +268,7 @@ if tipo_visualizacao_ind == None:
 if tipo_visualizacao_ind == "Tabela de Dados":
 
     df_individual = df_individual.sort_values(["ANO", "MES_ANO"])
-    st.dataframe(df_individual)
+    st.dataframe(df_individual, hide_index=True)
     csv = df_individual.to_csv(
         sep=';',
         index=False,

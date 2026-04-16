@@ -139,8 +139,10 @@ elif tipo_dado == "Grafico Anual":
     st.plotly_chart(fig_anual, width='stretch')
 
 elif tipo_dado == "Tabela de Dados":
-    st.dataframe(df[["ANO", "MES_ANO", "TOTAL_VANTAGENS"]].sort_values(by=["ANO", "MES_ANO"], ascending=[True, True]).reset_index(drop=True))
-
+    st.dataframe(
+        df[["ANO", "MES_ANO", "TOTAL_VANTAGENS"]].sort_values(by=["ANO", "MES_ANO"], ascending=[True, True]).reset_index(drop=True), 
+        hide_index=True
+    )
 
 
 st.subheader("Comparativo Mensal", divider=True)
