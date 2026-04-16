@@ -183,7 +183,9 @@ if anexo_rcl_tipo == "Gráfico Mensal":
         labels={"MES_ANO": "Mês/Ano", "VALOR": "Valor"}
     )
     fig_rcl.update_layout(
-        title=f"{anexo_rcl}",
+        title=dict(
+            text=f"{anexo_rcl}<br><sup>Ano {ano_min} a {ano_max}</sup>",
+        ),
         xaxis_title="Mês/Ano",
         yaxis_title="Valor (R$)",
         yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
@@ -204,7 +206,9 @@ elif anexo_rcl_tipo == "Gráfico Anual":
         labels={"ANO": "Ano", "VALOR": "Valor"}
     )
     fig_rcl.update_layout(
-        title=f"{anexo_rcl}",
+        title=dict(
+            text=f"{anexo_rcl}<br><sup>Ano {ano_min} a {ano_max}</sup>",
+        ),
         xaxis_title="Ano",
         yaxis_title="Valor (R$)",
         yaxis=dict(tickformat=",.2f", tickprefix="R$ ", separatethousands=True)
