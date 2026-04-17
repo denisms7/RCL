@@ -12,6 +12,14 @@ MESES = {
 }
 
 
+# Dicionário de cores
+COR_RECEITA = {
+    "RECEITA CORRENTE LÍQUIDA (III) = (I - II)": "#29b09d",
+    "RECEITAS CORRENTES (I)": "#0068c9",
+    "DEDUÇÕES (II)": "#ff2b2b",
+}
+
+
 # -------------------------------------------------
 # Configuração da página
 # -------------------------------------------------
@@ -160,6 +168,8 @@ if anexo_rcl is None:
     st.warning("Selecione um tipo de receita válido.")
     st.stop()
 
+cor = COR_RECEITA.get(anexo_rcl, "#888888")
+
 anexo_rcl_tipo = st.segmented_control(
     "Tipo de Visualização",
     options=[
@@ -180,6 +190,7 @@ if anexo_rcl_tipo == "Gráfico Mensal":
         x="MES_ANO",
         y="VALOR",
         markers=True,
+        color_discrete_sequence=[cor],
         labels={"MES_ANO": "Mês/Ano", "VALOR": "Valor"}
     )
     fig_rcl.update_layout(
@@ -203,6 +214,7 @@ elif anexo_rcl_tipo == "Gráfico Anual":
         rcl_geral_anual,
         x="ANO",
         y="VALOR",
+        color_discrete_sequence=[cor],
         labels={"ANO": "Ano", "VALOR": "Valor"}
     )
     fig_rcl.update_layout(
@@ -292,6 +304,7 @@ fig_mes = px.bar(
     df_mes,
     x="ANO",
     y="VALOR",
+    color_discrete_sequence=[cor],
     labels={"ANO": f"{label_meses} ao longo dos anos", "VALOR": "Valor"}
 )
 
