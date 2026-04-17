@@ -146,7 +146,10 @@ if len(df_negativo) > 0:
         with colc:
             st.metric(label="Menor Negativo", value=f"R$ {df_neg_max:,.2f}")
 
-        st.dataframe(df_neg, hide_index=True)
+        st.dataframe(
+            df_neg.sort_values(by="MES_ANO", ascending=False),
+            hide_index=True
+        )
 
 
 # -------------------------------------------------
@@ -180,7 +183,8 @@ anexo_rcl_tipo = st.segmented_control(
     default="Gráfico Mensal",
 )
 
-rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl].copy()  # FIX: .copy() para evitar SettingWithCopyWarning
+rcl_geral = df[df['ESPECIFICACAO'] == anexo_rcl].copy()
+
 
 if anexo_rcl_tipo == "Gráfico Mensal":
     rcl_geral = rcl_geral.sort_values(by="MES_ANO")
@@ -231,7 +235,10 @@ elif anexo_rcl_tipo == "Gráfico Anual":
     st.plotly_chart(fig_rcl, width='stretch')  # FIX: width='stretch' não é parâmetro válido
 
 elif anexo_rcl_tipo == "Tabela de Dados":
-    st.dataframe(rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]], hide_index=True)
+    st.dataframe(
+        rcl_geral[['ESPECIFICACAO', "ANO", "MES_ANO", "VALOR"]].sort_values(by="MES_ANO", ascending=False), 
+        hide_index=True
+    )
 
 else:
     st.warning("Selecione um tipo de visualização válido.")
