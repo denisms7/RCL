@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.express as px
 from data.rcl.data import load_data_rcl
 from data.data_modification import modification_date
+from data.ipca.data import carregar_ipca
 
 
 # Dicionário de meses
@@ -18,6 +19,27 @@ COR_RECEITA = {
     "RECEITAS CORRENTES (I)": "#0068c9",
     "DEDUÇÕES (II)": "#ff2b2b",
 }
+
+
+
+# -------------------------------------------------
+# Caculos ipca
+# -------------------------------------------------
+def calcular_fator_correcao_ipca(df_ipca) -> dict[int, float]:
+    df = df_ipca[["Ano", "Valor"]].copy().sort_values("Ano")
+
+    df["FATOR"] = 1 + df["Valor"] / 100
+    df["INDICE"] = df["FATOR"].cumprod()
+
+    # Índice "hoje" = após aplicar a inflação do último ano
+    indice_hoje = df["INDICE"].iloc[-1]
+
+    # Fator de cada ano: quanto falta acumular *a partir* daquele ano até hoje
+    # Usa o índice do ano anterior (shift), pois o valor do ano X ainda não sofreu a inflação de X
+    df["INDICE_ANTERIOR"] = df["INDICE"].shift(1, fill_value=1.0)
+    df["FATOR_CORRECAO"] = indice_hoje / df["INDICE_ANTERIOR"]
+
+    return dict(zip(df["Ano"], df["FATOR_CORRECAO"]))
 
 
 # -------------------------------------------------
@@ -37,6 +59,7 @@ st.title("💰 Receita Corrente Geral")
 # ==================================================
 with st.spinner("Carregando dados..."):
     df = load_data_rcl()
+    df_ipca = carregar_ipca()
 
 
 # ==================================================
@@ -210,20 +233,35 @@ if anexo_rcl_tipo == "Gráfico Mensal":
     )
     st.plotly_chart(fig_rcl, width='stretch')  # FIX: width='stretch' não é parâmetro válido
 
+
 elif anexo_rcl_tipo == "Gráfico Anual":
     rcl_geral_anual = rcl_geral.groupby("ANO", as_index=False).agg({"VALOR": "sum"})
     rcl_geral_anual = rcl_geral_anual.sort_values(by="ANO")
+
+    corrigir_ipca = st.toggle("Corrigir IPCA", value=False)
+
+    if corrigir_ipca:
+        fatores = calcular_fator_correcao_ipca(df_ipca)
+        ano_ref = int(df_ipca.sort_values("Ano")["Ano"].iloc[-1])
+
+        rcl_geral_anual["VALOR"] = rcl_geral_anual.apply(
+            lambda row: row["VALOR"] * fatores.get(int(row["ANO"]), 1.0),
+            axis=1,
+        )
+        subtitulo = f"Valores corrigidos pelo IPCA — preços de {ano_ref}"
+    else:
+        subtitulo = "Valores nominais (sem correção)"
 
     fig_rcl = px.bar(
         rcl_geral_anual,
         x="ANO",
         y="VALOR",
-        color_discrete_sequence=[cor],
-        labels={"ANO": "Ano", "VALOR": "Valor"}
+        labels={"ANO": "Ano", "VALOR": "Valor"},
+        color_discrete_sequence=[COR_RECEITA.get(anexo_rcl, "#29b09d")],
     )
     fig_rcl.update_layout(
         title=dict(
-            text=f"{anexo_rcl}<br><sup>Ano {ano_min} a {ano_max}</sup>",
+            text=f"{anexo_rcl}<br><sup>Ano {ano_min} a {ano_max} · {subtitulo}</sup>",
         ),
         xaxis_title="Ano",
         yaxis_title="Valor (R$)",
@@ -232,7 +270,8 @@ elif anexo_rcl_tipo == "Gráfico Anual":
     fig_rcl.update_traces(
         hovertemplate="Ano: %{x}<br>Valor: R$ %{y:,.2f}<extra></extra>"
     )
-    st.plotly_chart(fig_rcl, width='stretch')  # FIX: width='stretch' não é parâmetro válido
+    st.plotly_chart(fig_rcl, use_container_width=True)
+
 
 elif anexo_rcl_tipo == "Tabela de Dados":
     st.dataframe(
